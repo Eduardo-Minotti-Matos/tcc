@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>3DPrint Brasil - Loja de Impressora 3D</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body class="bg-zinc-950 text-white">
+
+  <nav class="bg-black border-b border-zinc-800 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl overflow-hidden flex items-center justify-center">
+            <img src="../imagens/Logo.png" alt="Logo" class="logo-img">
+        </div>
+        <div>
+          <h1 class="logo-font text-3xl font-bold tracking-tighter">3DPrint</h1>
+          <p class="text-[10px] text-emerald-400 -mt-1">BRASIL</p>
+        </div>
+      </div>
+
+      <div class="hidden md:flex items-center gap-8 text-sm font-medium">
+        <a href="../index.html" class="hover:text-emerald-400 transition">Início</a>
+        <a href="../produtos/PaginaPrincipalProdutos.html" class="hover:text-emerald-400 transition">Produtos</a>
+        <a href="../arquivos/PaginaPrincipalArquivos.html" class="hover:text-emerald-400 transition">Arquivos</a>
+      </div>
+
+      <div class="flex items-center gap-6">
+        <div class="cursor-pointer relative">
+          <i class="fa-solid fa-cart-shopping text-2xl"></i>
+          <span id="cart-count" class="absolute -top-2 -right-2 bg-emerald-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">0</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+
+  <section class="max-w-7xl mx-auto px-6 py-16">
+    <h2 class="text-4xl font-bold mb-10">Todos os Arquivos</h2>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+
+      <div class="bg-zinc-900 rounded-3xl overflow-hidden">
+        <img src="../imagens/carrinho3d.jpg" class="w-full h-64 object-cover">
+        <div class="p-6">
+          <h3 class="font-semibold text-lg">Filamento PLA Preto 1kg</h3>
+          <p class="text-emerald-400 text-2xl font-bold mt-2">R$ 89,90</p>
+          <div class="flex gap-3 mt-6">
+            <button onclick="addToCart(1)" class="flex-1 bg-emerald-500 hover:bg-emerald-600 py-4 rounded-3xl text-sm font-semibold">ADICIONAR</button>
+            <a href="../arquivos/1a.html" class="flex-1 border border-white/30 hover:bg-white/10 py-4 rounded-3xl text-sm font-semibold text-center">DETALHES</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-zinc-900 rounded-3xl overflow-hidden">
+        <img src="https://picsum.photos/id/102/600/600" class="w-full h-64 object-cover">
+        <div class="p-6">
+          <h3 class="font-semibold text-lg">Filamento PLA Branco 1kg</h3>
+          <p class="text-emerald-400 text-2xl font-bold mt-2">R$ 89,90</p>
+          <div class="flex gap-3 mt-6">
+            <button onclick="addToCart(2)" class="flex-1 bg-emerald-500 hover:bg-emerald-600 py-4 rounded-3xl text-sm font-semibold">ADICIONAR</button>
+            <a href="../produtos/2.html" class="flex-1 border border-white/30 hover:bg-white/10 py-4 rounded-3xl text-sm font-semibold text-center">DETALHES</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-zinc-900 rounded-3xl overflow-hidden">
+        <img src="https://picsum.photos/id/201/600/600" class="w-full h-64 object-cover">
+        <div class="p-6">
+          <h3 class="font-semibold text-lg">Filamento PETG Transparente 1kg</h3>
+          <p class="text-emerald-400 text-2xl font-bold mt-2">R$ 119,90</p>
+          <div class="flex gap-3 mt-6">
+            <button onclick="addToCart(3)" class="flex-1 bg-emerald-500 hover:bg-emerald-600 py-4 rounded-3xl text-sm font-semibold">ADICIONAR</button>
+            <a href="../produtos/3.html" class="flex-1 border border-white/30 hover:bg-white/10 py-4 rounded-3xl text-sm font-semibold text-center">DETALHES</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-zinc-900 rounded-3xl overflow-hidden">
+        <img src="https://picsum.photos/id/29/600/600" class="w-full h-64 object-cover">
+        <div class="p-6">
+          <h3 class="font-semibold text-lg">Impressora 3D Ender 3 V3 SE</h3>
+          <p class="text-emerald-400 text-2xl font-bold mt-2">R$ 1.499,00</p>
+          <div class="flex gap-3 mt-6">
+            <button onclick="addToCart(4)" class="flex-1 bg-emerald-500 hover:bg-emerald-600 py-4 rounded-3xl text-sm font-semibold">ADICIONAR</button>
+            <a href="../produtos/4.html" class="flex-1 border border-white/30 hover:bg-white/10 py-4 rounded-3xl text-sm font-semibold text-center">DETALHES</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-zinc-900 rounded-3xl overflow-hidden">
+        <img src="https://picsum.photos/id/29/600/600" class="w-full h-64 object-cover">
+        <div class="p-6">
+          <h3 class="font-semibold text-lg">Impressora 3D Ender 3 V3 SE</h3>
+          <p class="text-emerald-400 text-2xl font-bold mt-2">R$ 1.499,00</p>
+          <div class="flex gap-3 mt-6">
+            <button onclick="addToCart(4)" class="flex-1 bg-emerald-500 hover:bg-emerald-600 py-4 rounded-3xl text-sm font-semibold">ADICIONAR</button>
+            <a href="../produtos/5.html" class="flex-1 border border-white/30 hover:bg-white/10 py-4 rounded-3xl text-sm font-semibold text-center">DETALHES</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-zinc-900 rounded-3xl overflow-hidden">
+        <img src="https://picsum.photos/id/29/600/600" class="w-full h-64 object-cover">
+        <div class="p-6">
+          <h3 class="font-semibold text-lg">Impressora 3D Ender 3 V3 SE</h3>
+          <p class="text-emerald-400 text-2xl font-bold mt-2">R$ 1.499,00</p>
+          <div class="flex gap-3 mt-6">
+            <button onclick="addToCart(4)" class="flex-1 bg-emerald-500 hover:bg-emerald-600 py-4 rounded-3xl text-sm font-semibold">ADICIONAR</button>
+            <a href="../produtos/6.html" class="flex-1 border border-white/30 hover:bg-white/10 py-4 rounded-3xl text-sm font-semibold text-center">DETALHES</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-zinc-900 rounded-3xl overflow-hidden">
+        <img src="https://picsum.photos/id/29/600/600" class="w-full h-64 object-cover">
+        <div class="p-6">
+          <h3 class="font-semibold text-lg">Impressora 3D Ender 3 V3 SE</h3>
+          <p class="text-emerald-400 text-2xl font-bold mt-2">R$ 1.499,00</p>
+          <div class="flex gap-3 mt-6">
+            <button onclick="addToCart(4)" class="flex-1 bg-emerald-500 hover:bg-emerald-600 py-4 rounded-3xl text-sm font-semibold">ADICIONAR</button>
+            <a href="../produtos/7.html" class="flex-1 border border-white/30 hover:bg-white/10 py-4 rounded-3xl text-sm font-semibold text-center">DETALHES</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-zinc-900 rounded-3xl overflow-hidden">
+        <img src="https://picsum.photos/id/29/600/600" class="w-full h-64 object-cover">
+        <div class="p-6">
+          <h3 class="font-semibold text-lg">Impressora 3D Ender 3 V3 SE</h3>
+          <p class="text-emerald-400 text-2xl font-bold mt-2">R$ 1.499,00</p>
+          <div class="flex gap-3 mt-6">
+            <button onclick="addToCart(4)" class="flex-1 bg-emerald-500 hover:bg-emerald-600 py-4 rounded-3xl text-sm font-semibold">ADICIONAR</button>
+            <a href="../produtos/8.html" class="flex-1 border border-white/30 hover:bg-white/10 py-4 rounded-3xl text-sm font-semibold text-center">DETALHES</a>
+          </div>
+        </div>
+      </div>
+
+       <div class="bg-zinc-900 rounded-3xl overflow-hidden">
+        <img src="../imagens/carrinho3d.jpg" class="w-full h-64 object-cover">
+        <div class="p-6">
+          <h3 class="font-semibold text-lg">Filamento PLA Preto 1kg</h3>
+          <p class="text-emerald-400 text-2xl font-bold mt-2">R$ 89,90</p>
+          <div class="flex gap-3 mt-6">
+            <button onclick="addToCart(1)" class="flex-1 bg-emerald-500 hover:bg-emerald-600 py-4 rounded-3xl text-sm font-semibold">ADICIONAR</button>
+            <a href="../produtos/9.html" class="flex-1 border border-white/30 hover:bg-white/10 py-4 rounded-3xl text-sm font-semibold text-center">DETALHES</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-zinc-900 rounded-3xl overflow-hidden">
+        <img src="https://picsum.photos/id/102/600/600" class="w-full h-64 object-cover">
+        <div class="p-6">
+          <h3 class="font-semibold text-lg">Filamento PLA Branco 1kg</h3>
+          <p class="text-emerald-400 text-2xl font-bold mt-2">R$ 89,90</p>
+          <div class="flex gap-3 mt-6">
+            <button onclick="addToCart(2)" class="flex-1 bg-emerald-500 hover:bg-emerald-600 py-4 rounded-3xl text-sm font-semibold">ADICIONAR</button>
+            <a href="../produtos/10.html" class="flex-1 border border-white/30 hover:bg-white/10 py-4 rounded-3xl text-sm font-semibold text-center">DETALHES</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-zinc-900 rounded-3xl overflow-hidden">
+        <img src="https://picsum.photos/id/201/600/600" class="w-full h-64 object-cover">
+        <div class="p-6">
+          <h3 class="font-semibold text-lg">Filamento PETG Transparente 1kg</h3>
+          <p class="text-emerald-400 text-2xl font-bold mt-2">R$ 119,90</p>
+          <div class="flex gap-3 mt-6">
+            <button onclick="addToCart(3)" class="flex-1 bg-emerald-500 hover:bg-emerald-600 py-4 rounded-3xl text-sm font-semibold">ADICIONAR</button>
+            <a href="../produtos/11.html" class="flex-1 border border-white/30 hover:bg-white/10 py-4 rounded-3xl text-sm font-semibold text-center">DETALHES</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-zinc-900 rounded-3xl overflow-hidden">
+        <img src="https://picsum.photos/id/29/600/600" class="w-full h-64 object-cover">
+        <div class="p-6">
+          <h3 class="font-semibold text-lg">Impressora 3D Ender 3 V3 SE</h3>
+          <p class="text-emerald-400 text-2xl font-bold mt-2">R$ 1.499,00</p>
+          <div class="flex gap-3 mt-6">
+            <button onclick="addToCart(4)" class="flex-1 bg-emerald-500 hover:bg-emerald-600 py-4 rounded-3xl text-sm font-semibold">ADICIONAR</button>
+            <a href="../produtos/12.html" class="flex-1 border border-white/30 hover:bg-white/10 py-4 rounded-3xl text-sm font-semibold text-center">DETALHES</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-zinc-900 rounded-3xl overflow-hidden">
+        <img src="https://picsum.photos/id/29/600/600" class="w-full h-64 object-cover">
+        <div class="p-6">
+          <h3 class="font-semibold text-lg">Impressora 3D Ender 3 V3 SE</h3>
+          <p class="text-emerald-400 text-2xl font-bold mt-2">R$ 1.499,00</p>
+          <div class="flex gap-3 mt-6">
+            <button onclick="addToCart(4)" class="flex-1 bg-emerald-500 hover:bg-emerald-600 py-4 rounded-3xl text-sm font-semibold">ADICIONAR</button>
+            <a href="../produtos/13.html" class="flex-1 border border-white/30 hover:bg-white/10 py-4 rounded-3xl text-sm font-semibold text-center">DETALHES</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-zinc-900 rounded-3xl overflow-hidden">
+        <img src="https://picsum.photos/id/29/600/600" class="w-full h-64 object-cover">
+        <div class="p-6">
+          <h3 class="font-semibold text-lg">Impressora 3D Ender 3 V3 SE</h3>
+          <p class="text-emerald-400 text-2xl font-bold mt-2">R$ 1.499,00</p>
+          <div class="flex gap-3 mt-6">
+            <button onclick="addToCart(4)" class="flex-1 bg-emerald-500 hover:bg-emerald-600 py-4 rounded-3xl text-sm font-semibold">ADICIONAR</button>
+            <a href="../produtos/14.html" class="flex-1 border border-white/30 hover:bg-white/10 py-4 rounded-3xl text-sm font-semibold text-center">DETALHES</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-zinc-900 rounded-3xl overflow-hidden">
+        <img src="https://picsum.photos/id/29/600/600" class="w-full h-64 object-cover">
+        <div class="p-6">
+          <h3 class="font-semibold text-lg">Impressora 3D Ender 3 V3 SE</h3>
+          <p class="text-emerald-400 text-2xl font-bold mt-2">R$ 1.499,00</p>
+          <div class="flex gap-3 mt-6">
+            <button onclick="addToCart(4)" class="flex-1 bg-emerald-500 hover:bg-emerald-600 py-4 rounded-3xl text-sm font-semibold">ADICIONAR</button>
+            <a href="../produtos/15.html" class="flex-1 border border-white/30 hover:bg-white/10 py-4 rounded-3xl text-sm font-semibold text-center">DETALHES</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-zinc-900 rounded-3xl overflow-hidden">
+        <img src="https://picsum.photos/id/29/600/600" class="w-full h-64 object-cover">
+        <div class="p-6">
+          <h3 class="font-semibold text-lg">Impressora 3D Ender 3 V3 SE</h3>
+          <p class="text-emerald-400 text-2xl font-bold mt-2">R$ 1.499,00</p>
+          <div class="flex gap-3 mt-6">
+            <button onclick="addToCart(4)" class="flex-1 bg-emerald-500 hover:bg-emerald-600 py-4 rounded-3xl text-sm font-semibold">ADICIONAR</button>
+            <a href="../produtos/16.html" class="flex-1 border border-white/30 hover:bg-white/10 py-4 rounded-3xl text-sm font-semibold text-center">DETALHES</a>
+          </div>
+        </div>
+      </div>
+      
+
+    </div>
+  </section>
+  
+
+  <footer class="bg-black py-16 border-t border-zinc-800">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+      <h1 class="logo-font text-4xl font-bold tracking-tighter mb-4">3DPrint Brasil</h1>
+      <p class="text-zinc-500">Loja completa de impressora 3D • Pix instantâneo • Entrega em todo Brasil</p>
+      <p class="text-xs text-zinc-600 mt-8">© 2026 3DPrint Brasil</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
