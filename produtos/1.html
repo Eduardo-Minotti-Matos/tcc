@@ -8,7 +8,26 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="../styles.css"/>
+  <style>
+  #btn3d.active-view,
+  #btnImage.active-view {
+    background-color: rgb(16 185 129); /* emerald-500 */
+    color: white;
+    box-shadow: 0 10px 15px -3px rgb(16 185 129 / 0.3);
+  }
+
+  #btn3d:not(.active-view),
+  #btnImage:not(.active-view) {
+    color: #a1a1aa;
+  }
+
+  #btn3d:hover:not(.active-view),
+  #btnImage:hover:not(.active-view) {
+    color: white;
+    background-color: #27272a;
+  }
+</style>
 
 <script src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.2.0/model-viewer.min.js" 
         type="module"></script>
