@@ -27,21 +27,3 @@ body {
   color: black !important;
   font-weight: 600;
 }
-
-#btn3d.active-view,
-#btnImage.active-view {
-  background-color: rgb(16 185 129); /* emerald-500 */
-  color: white;
-  box-shadow: 0 10px 15px -3px rgb(16 185 129 / 0.3);
-}
-
-#btn3d:not(.active-view),
-#btnImage:not(.active-view) {
-  color: #a1a1aa;
-}
-
-#btn3d:hover:not(.active-view),
-#btnImage:hover:not(.active-view) {
-  color: white;
-  background-color: #27272a;
-}
