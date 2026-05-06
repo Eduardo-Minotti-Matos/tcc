@@ -12,9 +12,9 @@
   <style>
   #btn3d.active-view,
   #btnImage.active-view {
-    background-color: rgb(16 185 129); /* emerald-500 */
+    background-color: rgb(168 85 247); /* purple-500 */
     color: white;
-    box-shadow: 0 10px 15px -3px rgb(16 185 129 / 0.3);
+    box-shadow: 0 10px 15px -3px rgba(131, 16, 185, 0.3);
   }
 
   #btn3d:not(.active-view),
@@ -34,7 +34,7 @@
 </head>
 <body class="bg-zinc-950 text-white">
 
-  <nav class="bg-black border-b border-zinc-800 sticky top-0 z-50">
+  <nav class="relative z-[100] bg-black border-b border-zinc-800 sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl overflow-hidden flex items-center justify-center">
@@ -42,48 +42,48 @@
         </div>
         <div>
           <h1 class="logo-font text-3xl font-bold tracking-tighter">3DPrint</h1>
-          <p class="text-[10px] text-emerald-400 -mt-1">BRASIL</p>
+          <p class="text-[10px] text-purple-400 -mt-1">BRASIL</p>
         </div>
       </div>
 
       <div class="hidden md:flex items-center gap-8 text-sm font-medium">
-        <a href="../index.html" class="hover:text-emerald-400 transition">Início</a>
-        <a href="../produtos/PaginaPrincipalProdutos.html" class="hover:text-emerald-400 transition">Produtos</a>
-        <a href="../arquivos/PaginaPrincipalArquivos.html" class="hover:text-emerald-400 transition">Arquivos</a>
+        <a href="../index.html" class="hover:text-purple-400 transition">Início</a>
+        <a href="../produtos/PaginaPrincipalProdutos.html" class="hover:text-purple-400 transition">Produtos</a>
+        <a href="../arquivos/PaginaPrincipalArquivos.html" class="hover:text-purple-400 transition">Arquivos</a>
       </div>
 
       <div class="flex items-center gap-6">
         <div class="cursor-pointer relative">
           <i class="fa-solid fa-cart-shopping text-2xl"></i>
-          <span id="cart-count" class="absolute -top-2 -right-2 bg-emerald-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">0</span>
+          <span id="cart-count" class="absolute -top-2 -right-2 bg-purple-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">0</span>
         </div>
       </div>
     </div>
   </nav>
 
-  <main class="max-w-7xl mx-auto px-6 py-12">
-    <a href="../index.html" class="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 mb-10 text-lg">
+  <main class="relative z-0 max-w-7xl mx-auto px-6 py-12">
+    <a href="../index.html" class="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 mb-10 text-lg">
       <i class="fa-solid fa-arrow-left"></i> Voltar para a loja
     </a>
 
     <div class="grid md:grid-cols-2 gap-12 lg:gap-16">
       
             <!-- ==================== ÁREA VISUAL (3D + CARROSSEL) ==================== -->
-      <div class="rounded-3xl overflow-hidden shadow-2xl shadow-emerald-900/30 bg-zinc-900 relative">
+      <div class="rounded-3xl overflow-hidden shadow-2xl shadow-purple-900/30 bg-zinc-900 relative">
 
-        <!-- Botões de alternância -->
-       <!-- Botões de alternância - Estilo Melhorado -->
-<div class="absolute top-4 left-4 z-50 flex gap-1 bg-zinc-900/90 backdrop-blur-xl rounded-2xl p-1.5 border border-zinc-700 shadow-xl">
+
+<!-- Botões de alternância -->
+<div class="absolute top-6 left-6 z-40 flex gap-1 bg-zinc-900/95 backdrop-blur-2xl rounded-3xl p-2 border border-zinc-700 shadow-2xl">
   
   <button onclick="showView('3d')" 
           id="btn3d"
-          class="px-6 py-3 rounded-xl text-sm font-medium transition-all flex items-center gap-2">
+          class="px-7 py-3 rounded-2xl text-sm font-medium transition-all flex items-center gap-2">
     <span>3D</span>
   </button>
 
   <button onclick="showView('image')" 
           id="btnImage"
-          class="px-6 py-3 rounded-xl text-sm font-medium transition-all flex items-center gap-2">
+          class="px-7 py-3 rounded-2xl text-sm font-medium transition-all flex items-center gap-2">
     <span>IMG</span>
   </button>
 
@@ -110,7 +110,7 @@
           <!-- Botão AR (mantido na mesma posição) -->
           <button onclick="activateAR()" 
                   class="absolute bottom-6 left-1/2 -translate-x-1/2 
-                         bg-emerald-600 hover:bg-emerald-500 
+                         bg-purple-600 hover:bg-purple-500 
                          text-white px-8 py-4 rounded-2xl font-medium 
                          flex items-center gap-3 shadow-xl transition-all active:scale-95 z-30">
             <i class="fa-solid fa-cube"></i>
@@ -153,10 +153,10 @@
       </div>
 
       <div class="flex flex-col">
-        <div class="text-emerald-400 text-sm uppercase tracking-wide mb-2">Filamentos</div>
+        <div class="text-purple-400 text-sm uppercase tracking-wide mb-2">Filamentos</div>
         <h1 class="text-4xl md:text-5xl font-bold tracking-tight mb-6">Filamento PLA Preto 1kg</h1>
 
-        <div class="text-5xl font-bold text-emerald-400 mb-8">R$ 89,90</div>
+        <div class="text-5xl font-bold text-purple-400 mb-8">R$ 89,90</div>
 
         <div class="prose prose-invert max-w-none text-zinc-300 text-lg leading-relaxed mb-10">
           <ul class="list-disc pl-5 space-y-3">
@@ -172,7 +172,7 @@
         </div>
 
         <button onclick="addToCart(1)" 
-                class="w-full md:w-auto bg-emerald-600 hover:bg-emerald-500 transition py-6 px-16 rounded-3xl text-xl font-semibold">
+                class="w-full md:w-auto bg-purple-600 hover:bg-purple-500 transition py-6 px-16 rounded-3xl text-xl font-semibold">
           Adicionar ao Carrinho
         </button>
       </div>
@@ -229,7 +229,7 @@
     for (let i = 0; i < totalSlides; i++) {
       const thumb = document.createElement('img');
       thumb.src = document.getElementById('slides').children[i].src;
-      thumb.className = `w-20 h-20 object-cover rounded-2xl cursor-pointer border-2 transition-all hover:scale-105 ${i === currentSlide ? 'border-emerald-500 ring-2 ring-emerald-500/50' : 'border-transparent'}`;
+      thumb.className = `w-20 h-20 object-cover rounded-2xl cursor-pointer border-2 transition-all hover:scale-105 ${i === currentSlide ? 'border-purple-500 ring-2 ring-purple-500/50' : 'border-transparent'}`;
       thumb.onclick = () => goToSlide(i);
       thumbContainer.appendChild(thumb);
     }
