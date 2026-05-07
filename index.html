@@ -16,7 +16,7 @@
     <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl overflow-hidden flex items-center justify-center">
-            <img src="imagens/Logo.png" alt="Logo" class="logo-img">
+          <img src="imagens/Logo.png" alt="Logo" class="logo-img">
         </div>
         <div>
           <h1 class="logo-font text-3xl font-bold tracking-tighter">3DPrint</h1>
@@ -30,77 +30,120 @@
         <a href="arquivos/PaginaPrincipalArquivos.html" class="hover:text-purple-400 transition">Arquivos</a>
       </div>
 
-      <div class="flex items-center gap-6">
-        <div class="cursor-pointer relative">
-          <i class="fa-solid fa-cart-shopping text-2xl"></i>
-          <span id="cart-count" class="absolute -top-2 -right-2 bg-purple-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">0</span>
-        </div>
+      <div class="flex items-center gap-4" id="userNav">
+        <!-- Preenchido via JavaScript -->
       </div>
     </div>
   </nav>
 
+  <!-- Hero com Carrossel -->
   <header class="relative h-screen min-h-[600px] overflow-hidden">
-  
-  <!-- Carrossel de Imagens -->
-  <div id="heroCarousel" class="absolute inset-0">
-    <div id="heroSlides" class="flex h-full transition-transform duration-700 ease-out">
-      <img src="https://picsum.photos/id/1015/1920/1080" class="w-full h-full object-cover flex-shrink-0" alt="Impressora 3D">
-      <img src="https://picsum.photos/id/201/1920/1080" class="w-full h-full object-cover flex-shrink-0" alt="Filamentos">
-      <img src="https://picsum.photos/id/106/1920/1080" class="w-full h-full object-cover flex-shrink-0" alt="Impressão 3D">
-      <img src="https://picsum.photos/id/133/1920/1080" class="w-full h-full object-cover flex-shrink-0" alt="Criação">
+    <div id="heroCarousel" class="absolute inset-0">
+      <div id="heroSlides" class="flex h-full transition-transform duration-700 ease-out">
+        <img src="https://picsum.photos/id/1015/1920/1080" class="w-full h-full object-cover flex-shrink-0" alt="Impressora 3D">
+        <img src="https://picsum.photos/id/201/1920/1080" class="w-full h-full object-cover flex-shrink-0" alt="Filamentos">
+        <img src="https://picsum.photos/id/106/1920/1080" class="w-full h-full object-cover flex-shrink-0" alt="Impressão 3D">
+        <img src="https://picsum.photos/id/133/1920/1080" class="w-full h-full object-cover flex-shrink-0" alt="Criação">
+      </div>
+    </div>
+
+    <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-transparent"></div>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-6 h-full flex items-center">
+      <div class="max-w-2xl">
+        <div class="inline-flex items-center gap-2 bg-zinc-900/80 border border-purple-500 text-purple-400 px-4 py-2 rounded-3xl text-sm mb-6 backdrop-blur-md">
+          <span class="relative flex h-3 w-3">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-3 w-3 bg-purple-500"></span>
+          </span>
+          FRETE GRÁTIS ACIMA DE R$ 60
+        </div>
+        
+        <h2 class="text-6xl md:text-7xl font-bold logo-font leading-none tracking-tighter mb-6">
+          PRODUTOS E ARQUIVOS 3D<br><span class="text-purple-500">SÓ AQUI</span>
+        </h2>
+        
+        <p class="text-xl text-zinc-300 max-w-md mb-10">
+          Filamentos premium, impressoras, resinas e milhares de arquivos 3D com entrega rápida para todo Brasil.
+        </p>
+        
+        <div class="flex gap-4">
+          <button onclick="window.location.href='produtos/PaginaPrincipalProdutos.html'" class="bg-purple-500 hover:bg-purple-600 transition px-8 py-5 rounded-3xl font-semibold text-lg flex items-center gap-3">
+            Ver produtos <i class="fa-solid fa-arrow-right"></i>
+          </button>
+          <button onclick="window.location.href='arquivos/PaginaPrincipalArquivos.html'" class="border border-white/30 hover:bg-white/10 transition px-8 py-5 rounded-3xl font-semibold text-lg">
+            Ver arquivos
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="heroDots" class="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-3 z-20"></div>
+  </header>
+
+  <!-- Modal Login -->
+  <div id="loginModal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[100]">
+    <div class="bg-zinc-900 rounded-3xl w-full max-w-md mx-4 overflow-hidden">
+      <div class="p-6 border-b border-zinc-800 flex items-center justify-between">
+        <h2 class="text-2xl font-bold">Entrar na conta</h2>
+        <button onclick="closeLoginModal()" class="text-3xl text-zinc-400 hover:text-white">×</button>
+      </div>
+      <div class="p-8">
+        <form id="loginForm" onsubmit="handleLogin(event)">
+          <div class="space-y-5">
+            <div>
+              <label class="block text-sm text-zinc-400 mb-2">E-mail</label>
+              <input type="email" id="email" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 focus:outline-none focus:border-purple-500" placeholder="seu@email.com" required>
+            </div>
+            <div>
+              <label class="block text-sm text-zinc-400 mb-2">Senha</label>
+              <input type="password" id="password" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 focus:outline-none focus:border-purple-500" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 py-4 rounded-2xl font-semibold text-lg transition">Entrar</button>
+          </div>
+        </form>
+        <div class="text-center mt-6 text-zinc-400">
+          Não tem conta? <a href="#" onclick="switchToRegister()" class="text-purple-400 hover:text-purple-500">Cadastre-se</a>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Overlay escuro -->
-  <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-transparent"></div>
-
-  <!-- Conteúdo -->
-  <div class="relative z-10 max-w-7xl mx-auto px-6 h-full flex items-center">
-    <div class="max-w-2xl">
-      <div class="inline-flex items-center gap-2 bg-zinc-900/80 border border-purple-500 text-purple-400 px-4 py-2 rounded-3xl text-sm mb-6 backdrop-blur-md">
-        <span class="relative flex h-3 w-3">
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
-          <span class="relative inline-flex rounded-full h-3 w-3 bg-purple-500"></span>
-        </span>
-        FRETE GRÁTIS ACIMA DE R$ 60
+  <!-- Modal Cadastro -->
+  <div id="registerModal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[100]">
+    <div class="bg-zinc-900 rounded-3xl w-full max-w-md mx-4 overflow-hidden">
+      <div class="p-6 border-b border-zinc-800 flex items-center justify-between">
+        <h2 class="text-2xl font-bold">Criar conta</h2>
+        <button onclick="closeRegisterModal()" class="text-3xl text-zinc-400 hover:text-white">×</button>
       </div>
-      
-      <h2 class="text-6xl md:text-7xl font-bold logo-font leading-none tracking-tighter mb-6">
-        PRODUTOS E ARQUIVOS 3D<br><span class="text-purple-500">SÓ AQUI</span>
-      </h2>
-      
-      <p class="text-xl text-zinc-300 max-w-md mb-10">
-        Filamentos premium, impressoras, resinas e milhares de arquivos 3D com entrega rápida para todo Brasil.
-      </p>
-      
-      <div class="flex gap-4">
-        <button onclick="window.location.href='produtos/PaginaPrincipalProdutos.html'" 
-                class="bg-purple-500 hover:bg-purple-600 transition px-8 py-5 rounded-3xl font-semibold text-lg flex items-center gap-3">
-          Ver produtos <i class="fa-solid fa-arrow-right"></i>
-        </button>
-        <button onclick="window.location.href='arquivos/PaginaPrincipalArquivos.html'" 
-                class="border border-white/30 hover:bg-white/10 transition px-8 py-5 rounded-3xl font-semibold text-lg">
-          Ver arquivos
-        </button>
+      <div class="p-8">
+        <form id="registerForm" onsubmit="handleRegister(event)">
+          <div class="space-y-5">
+            <div>
+              <label class="block text-sm text-zinc-400 mb-2">Nome completo</label>
+              <input type="text" id="regName" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 focus:outline-none focus:border-purple-500" placeholder="Seu nome" required>
+            </div>
+            <div>
+              <label class="block text-sm text-zinc-400 mb-2">E-mail</label>
+              <input type="email" id="regEmail" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 focus:outline-none focus:border-purple-500" placeholder="seu@email.com" required>
+            </div>
+            <div>
+              <label class="block text-sm text-zinc-400 mb-2">Senha</label>
+              <input type="password" id="regPassword" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 focus:outline-none focus:border-purple-500" placeholder="Mínimo 6 caracteres" required>
+            </div>
+            <div>
+              <label class="block text-sm text-zinc-400 mb-2">Confirmar Senha</label>
+              <input type="password" id="regConfirmPassword" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 focus:outline-none focus:border-purple-500" placeholder="Confirme sua senha" required>
+            </div>
+            <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 py-4 rounded-2xl font-semibold text-lg transition">Criar minha conta</button>
+          </div>
+        </form>
+        <div class="text-center mt-6 text-zinc-400">
+          Já tem conta? <a href="#" onclick="switchToLogin()" class="text-purple-400 hover:text-purple-500">Entrar</a>
+        </div>
       </div>
     </div>
   </div>
-
-  <!-- Bolinhas do carrossel -->
-  <div id="heroDots" class="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-3 z-20"></div>
-
-  <!-- Setas (opcional) -->
-  <button onclick="prevHeroSlide()" 
-          class="absolute left-6 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 p-4 rounded-full text-white transition z-20">
-    <i class="fa-solid fa-chevron-left"></i>
-  </button>
-  <button onclick="nextHeroSlide()" 
-          class="absolute right-6 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 p-4 rounded-full text-white transition z-20">
-    <i class="fa-solid fa-chevron-right"></i>
-  </button>
-</header>
-
-  
 
   <footer class="bg-black py-16 border-t border-zinc-800">
     <div class="max-w-7xl mx-auto px-6 text-center">
@@ -110,8 +153,8 @@
     </div>
   </footer>
 
-  <script src="script.js"></script>
   <script>
+  // ==================== CARROSSEL HERO ====================
   let heroSlide = 0;
   const heroTotal = 4;
 
@@ -132,24 +175,126 @@
     updateHeroDots();
   }
 
-  function nextHeroSlide() {
-    heroSlide = (heroSlide + 1) % heroTotal;
-    goToHeroSlide(heroSlide);
+  function nextHeroSlide() { heroSlide = (heroSlide + 1) % heroTotal; goToHeroSlide(heroSlide); }
+  function prevHeroSlide() { heroSlide = (heroSlide - 1 + heroTotal) % heroTotal; goToHeroSlide(heroSlide); }
+
+  setInterval(nextHeroSlide, 5000);
+
+  // ==================== GERENCIAMENTO DE USUÁRIO ====================
+  function updateUserNav() {
+    const userNav = document.getElementById('userNav');
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    if (user && user.name) {
+      userNav.innerHTML = `
+        <div class="flex items-center gap-4">
+          <span class="text-sm font-medium text-purple-400">
+            Olá, <span class="font-semibold">${user.name.split(' ')[0]}</span>
+          </span>
+          <button onclick="logout()" 
+                  class="text-sm text-zinc-400 hover:text-red-400 transition flex items-center gap-1">
+            <i class="fa-solid fa-right-from-bracket"></i> Sair
+          </button>
+        </div>
+      `;
+    } else {
+      userNav.innerHTML = `
+        <button onclick="openLoginModal()" class="flex items-center gap-2 hover:text-purple-400 transition">
+          <i class="fa-solid fa-user text-xl"></i>
+          <span class="hidden md:block text-sm font-medium">Entrar</span>
+        </button>
+
+        <button onclick="openRegisterModal()" 
+                class="bg-purple-600 hover:bg-purple-700 px-5 py-2 rounded-2xl text-sm font-medium transition">
+          Cadastre-se
+        </button>
+
+        <div class="cursor-pointer relative">
+          <i class="fa-solid fa-cart-shopping text-2xl"></i>
+          <span id="cart-count" class="absolute -top-2 -right-2 bg-purple-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">0</span>
+        </div>
+      `;
+    }
   }
 
-  function prevHeroSlide() {
-    heroSlide = (heroSlide - 1 + heroTotal) % heroTotal;
-    goToHeroSlide(heroSlide);
+  function logout() {
+    if (confirm("Deseja realmente sair?")) {
+      localStorage.removeItem('user');
+      updateUserNav();
+    }
   }
 
-  // Auto-play (opcional)
-  setInterval(() => {
-    nextHeroSlide();
-  }, 5000);
+  // ==================== MODAIS ====================
+  function openLoginModal() {
+    document.getElementById('loginModal').classList.remove('hidden');
+    document.getElementById('email').focus();
+  }
 
-  // Inicializar
+  function closeLoginModal() {
+    document.getElementById('loginModal').classList.add('hidden');
+  }
+
+  function openRegisterModal() {
+    document.getElementById('registerModal').classList.remove('hidden');
+    document.getElementById('regName').focus();
+  }
+
+  function closeRegisterModal() {
+    document.getElementById('registerModal').classList.add('hidden');
+  }
+
+  function switchToLogin() {
+    closeRegisterModal();
+    openLoginModal();
+  }
+
+  function switchToRegister() {
+    closeLoginModal();
+    openRegisterModal();
+  }
+
+  function handleLogin(e) {
+    e.preventDefault();
+    const email = document.getElementById('email').value.trim();
+
+    const savedUser = JSON.parse(localStorage.getItem('user'));
+
+    if (savedUser && savedUser.email === email) {
+      alert(`✅ Bem-vindo de volta, ${savedUser.name}!`);
+    } else {
+      alert("✅ Login realizado com sucesso! (Usuário de demonstração)");
+    }
+
+    closeLoginModal();
+    updateUserNav();
+  }
+
+  function handleRegister(e) {
+    e.preventDefault();
+    const name = document.getElementById('regName').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const password = document.getElementById('regPassword').value;
+    const confirm = document.getElementById('regConfirmPassword').value;
+
+    if (password.length < 6) return alert("Senha deve ter no mínimo 6 caracteres.");
+    if (password !== confirm) return alert("As senhas não coincidem!");
+
+    const user = { name, email, registeredAt: new Date().toISOString() };
+    localStorage.setItem('user', JSON.stringify(user));
+
+    alert(`✅ Conta criada com sucesso!\nBem-vindo(a), ${name}!`);
+    closeRegisterModal();
+    updateUserNav();
+  }
+
+  // Fechar modais clicando fora
+  document.getElementById('loginModal').addEventListener('click', e => { if (e.target === this) closeLoginModal(); });
+  document.getElementById('registerModal').addEventListener('click', e => { if (e.target === this) closeRegisterModal(); });
+
+  // Inicialização
   window.addEventListener('load', () => {
     updateHeroDots();
+    updateUserNav();     // ← Garante que mostre o usuário se já estiver logado
   });
 </script>
 </body>
