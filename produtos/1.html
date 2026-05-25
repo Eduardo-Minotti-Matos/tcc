@@ -89,24 +89,16 @@
             alt="Filamento PLA Preto 1kg"
             auto-rotate 
             camera-controls 
-            enable-pan="true"
-            enable-zoom="true"
             shadow-intensity="1.2"
-            exposure="0.8"
-            environment-intensity="0.7"
-            environment-image="neutral"
+            exposure="0.85"
+            environment-intensity="0.75"
             ar
             ar-modes="webxr scene-viewer quick-look"
-            ar-scale="auto"
-            ar-placement="floor"
-            camera-orbit="45deg 55deg 4m"
-            camera-target="0m 0.2m 0m"
-            field-of-view="45deg"
-            min-camera-orbit="0deg 0deg 1.5m"
-            max-camera-orbit="360deg 90deg 8m"
+            ar-scale="auto"           <!-- Melhorado apenas para AR -->
+            ar-placement="floor"      <!-- Melhorado apenas para AR -->
+            camera-orbit="45deg 55deg 3m"   <!-- Mantido original -->
             style="width: 100%; height: 520px; background-color: #18181b;"
-            loading="eager"
-            shadow-softness="1">
+            loading="eager">
           </model-viewer>
 
           <!-- Botão AR -->
@@ -187,15 +179,15 @@
 
       if (modelViewer.canActivateAR) {
         modelViewer.activateAR().catch(err => {
-          console.error(err);
-          alert("Não foi possível iniciar o AR. Tente no Chrome ou Safari.");
+          console.error("Erro no AR:", err);
+          alert("Não foi possível iniciar o AR.\n\nDicas:\n• Use o navegador Chrome ou Safari\n• Permita acesso à câmera");
         });
       } else {
         alert("Realidade Aumentada não é suportada neste dispositivo ou navegador.");
       }
     }
 
-    // Scripts do carrossel (mantidos)
+    // Scripts do carrossel
     let currentSlide = 0;
     const totalSlides = 4;
 
@@ -240,13 +232,6 @@
     window.addEventListener('load', () => {
       showView('3d');
       createThumbnails();
-
-      const model = document.getElementById('modelViewer');
-      if (model) {
-        model.addEventListener('load', () => {
-          console.log('✅ Modelo 3D carregado - Use mouse para girar e arrastar');
-        });
-      }
     });
   </script>
 </body>
