@@ -92,20 +92,21 @@
         <!-- ==================== VISUALIZADOR 3D ==================== -->
         <div id="view3d">
           <model-viewer 
-            id="modelViewer"
-            src="../modelos/dinossauro.glb"
-            alt="Filamento PLA Preto 1kg"
-            auto-rotate 
-            camera-controls 
-            shadow-intensity="1.2"
-            exposure="0.85"
-            environment-intensity="0.75"
-            ar
-            ar-modes="webxr scene-viewer quick-look"
-            style="width: 100%; height: 520px; background-color: #18181b;"
-            loading="eager"
-            camera-orbit="45deg 55deg 3m">
-          </model-viewer>
+    id="modelViewer"
+    src="../modelos/dinossauro.glb"
+    alt="Filamento PLA Preto 1kg"
+    auto-rotate 
+    camera-controls 
+    shadow-intensity="1.2"
+    exposure="0.85"
+    environment-intensity="0.75"
+    ar
+    ar-scale="fixed"
+    ar-modes="webxr scene-viewer quick-look"
+    style="width: 100%; height: 520px; background-color: #18181b;"
+    loading="eager"
+    camera-orbit="45deg 55deg 3m">
+</model-viewer>
 
           <!-- Botão AR (mantido na mesma posição) -->
           <button onclick="activateAR()" 
