@@ -68,47 +68,47 @@
 
     <div class="grid md:grid-cols-2 gap-12 lg:gap-16">
       
-            <!-- ==================== ÁREA VISUAL (3D + CARROSSEL) ==================== -->
+      <!-- ==================== ÁREA VISUAL (3D + CARROSSEL) ==================== -->
       <div class="rounded-3xl overflow-hidden shadow-2xl shadow-purple-900/30 bg-zinc-900 relative">
 
+        <!-- Botões de alternância -->
+        <div class="absolute top-6 left-6 z-40 flex gap-1 bg-zinc-900/95 backdrop-blur-2xl rounded-3xl p-2 border border-zinc-700 shadow-2xl">
+          <button onclick="showView('3d')" 
+                  id="btn3d"
+                  class="px-7 py-3 rounded-2xl text-sm font-medium transition-all flex items-center gap-2">
+            <span>3D</span>
+          </button>
 
-<!-- Botões de alternância -->
-<div class="absolute top-6 left-6 z-40 flex gap-1 bg-zinc-900/95 backdrop-blur-2xl rounded-3xl p-2 border border-zinc-700 shadow-2xl">
-  
-  <button onclick="showView('3d')" 
-          id="btn3d"
-          class="px-7 py-3 rounded-2xl text-sm font-medium transition-all flex items-center gap-2">
-    <span>3D</span>
-  </button>
-
-  <button onclick="showView('image')" 
-          id="btnImage"
-          class="px-7 py-3 rounded-2xl text-sm font-medium transition-all flex items-center gap-2">
-    <span>IMG</span>
-  </button>
-
-</div>
+          <button onclick="showView('image')" 
+                  id="btnImage"
+                  class="px-7 py-3 rounded-2xl text-sm font-medium transition-all flex items-center gap-2">
+            <span>IMG</span>
+          </button>
+        </div>
 
         <!-- ==================== VISUALIZADOR 3D ==================== -->
         <div id="view3d">
           <model-viewer 
-    id="modelViewer"
-    src="../modelos/elefante.glb"
-    alt="Filamento PLA Preto 1kg"
-    auto-rotate 
-    camera-controls 
-    shadow-intensity="1.2"
-    exposure="0.85"
-    environment-intensity="0.75"
-    ar
-    ar-scale="fixed"
-    ar-modes="webxr scene-viewer quick-look"
-    style="width: 100%; height: 520px; background-color: #18181b;"
-    loading="eager"
-    camera-orbit="45deg 55deg 3m">
-</model-viewer>
+            id="modelViewer"
+            src="../modelos/dinossauro.glb"
+            alt="Filamento PLA Preto 1kg"
+            auto-rotate 
+            camera-controls 
+            shadow-intensity="1.2"
+            exposure="0.85"
+            environment-intensity="0.75"
+            ar
+            ar-scale="fixed"
+            ar-placement="floor"
+            ar-modes="webxr scene-viewer quick-look"
+            style="width: 100%; height: 520px; background-color: #18181b;"
+            loading="eager"
+            camera-orbit="45deg 55deg 3m"
+            min-camera-orbit="auto auto 1.5m"
+            max-camera-orbit="auto auto 8m">
+          </model-viewer>
 
-          <!-- Botão AR (mantido na mesma posição) -->
+          <!-- Botão AR -->
           <button onclick="activateAR()" 
                   class="absolute bottom-6 left-1/2 -translate-x-1/2 
                          bg-purple-600 hover:bg-purple-500 
@@ -119,9 +119,8 @@
           </button>
         </div>
 
-                <!-- ==================== CARROSSEL DE IMAGENS ==================== -->
+        <!-- ==================== CARROSSEL DE IMAGENS ==================== -->
         <div id="viewImage" class="hidden flex flex-col">
-
           <!-- Imagem Principal -->
           <div class="relative overflow-hidden">
             <div id="carousel" class="overflow-hidden">
@@ -144,11 +143,10 @@
             </button>
           </div>
 
-          <!-- Miniaturas - Área Cinza Separada -->
+          <!-- Miniaturas -->
           <div class="bg-zinc-900 py-5 border-t border-zinc-800">
             <div id="thumbnails" class="flex gap-4 justify-center px-4"></div>
           </div>
-
         </div>
 
       </div>
@@ -211,6 +209,7 @@
     }
   });
 </script>
+
 <script>
   let currentSlide = 0;
   const totalSlides = 4;
@@ -223,7 +222,7 @@
     document.getElementById('btnImage').classList.toggle('active-view', view === 'image');
   }
 
-    function createThumbnails() {
+  function createThumbnails() {
     const thumbContainer = document.getElementById('thumbnails');
     thumbContainer.innerHTML = '';
 
@@ -250,15 +249,6 @@
   function prevSlide() {
     currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
     goToSlide(currentSlide);
-  }
-
-  function activateAR() {
-    const modelViewer = document.getElementById('modelViewer');
-    if (modelViewer && modelViewer.activateAR) {
-      modelViewer.activateAR();
-    } else {
-      alert("Modo AR não disponível neste dispositivo ou navegador.");
-    }
   }
 
   // Inicialização
