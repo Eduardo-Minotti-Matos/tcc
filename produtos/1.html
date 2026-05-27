@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Filamento PLA Preto 1kg - 3DPrint Brasil</title>
+  <title>Filamento PLA Preto 1kg - Descomplica3D Brasil</title>
   
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
@@ -12,7 +12,7 @@
   <style>
   #btn3d.active-view,
   #btnImage.active-view {
-    background-color: rgb(168 85 247);
+    background-color: rgb(168 85 247); /* purple-500 */
     color: white;
     box-shadow: 0 10px 15px -3px rgba(131, 16, 185, 0.3);
   }
@@ -68,23 +68,26 @@
 
     <div class="grid md:grid-cols-2 gap-12 lg:gap-16">
       
-      <!-- ==================== ÁREA VISUAL (3D + CARROSSEL) ==================== -->
+            <!-- ==================== ÁREA VISUAL (3D + CARROSSEL) ==================== -->
       <div class="rounded-3xl overflow-hidden shadow-2xl shadow-purple-900/30 bg-zinc-900 relative">
 
-        <!-- Botões de alternância -->
-        <div class="absolute top-6 left-6 z-40 flex gap-1 bg-zinc-900/95 backdrop-blur-2xl rounded-3xl p-2 border border-zinc-700 shadow-2xl">
-          <button onclick="showView('3d')" 
-                  id="btn3d"
-                  class="px-7 py-3 rounded-2xl text-sm font-medium transition-all flex items-center gap-2">
-            <span>3D</span>
-          </button>
 
-          <button onclick="showView('image')" 
-                  id="btnImage"
-                  class="px-7 py-3 rounded-2xl text-sm font-medium transition-all flex items-center gap-2">
-            <span>IMG</span>
-          </button>
-        </div>
+<!-- Botões de alternância -->
+<div class="absolute top-6 left-6 z-40 flex gap-1 bg-zinc-900/95 backdrop-blur-2xl rounded-3xl p-2 border border-zinc-700 shadow-2xl">
+  
+  <button onclick="showView('3d')" 
+          id="btn3d"
+          class="px-7 py-3 rounded-2xl text-sm font-medium transition-all flex items-center gap-2">
+    <span>3D</span>
+  </button>
+
+  <button onclick="showView('image')" 
+          id="btnImage"
+          class="px-7 py-3 rounded-2xl text-sm font-medium transition-all flex items-center gap-2">
+    <span>IMG</span>
+  </button>
+
+</div>
 
         <!-- ==================== VISUALIZADOR 3D ==================== -->
         <div id="view3d">
@@ -98,17 +101,13 @@
             exposure="0.85"
             environment-intensity="0.75"
             ar
-            ar-scale="fixed"
-            ar-placement="floor"
             ar-modes="webxr scene-viewer quick-look"
             style="width: 100%; height: 520px; background-color: #18181b;"
             loading="eager"
-            camera-orbit="45deg 55deg 3m"
-            min-camera-orbit="auto auto 1.5m"
-            max-camera-orbit="auto auto 8m">
+            camera-orbit="45deg 55deg 3m">
           </model-viewer>
 
-          <!-- Botão AR -->
+          <!-- Botão AR (mantido na mesma posição) -->
           <button onclick="activateAR()" 
                   class="absolute bottom-6 left-1/2 -translate-x-1/2 
                          bg-purple-600 hover:bg-purple-500 
@@ -119,8 +118,9 @@
           </button>
         </div>
 
-        <!-- ==================== CARROSSEL DE IMAGENS ==================== -->
+                <!-- ==================== CARROSSEL DE IMAGENS ==================== -->
         <div id="viewImage" class="hidden flex flex-col">
+
           <!-- Imagem Principal -->
           <div class="relative overflow-hidden">
             <div id="carousel" class="overflow-hidden">
@@ -143,29 +143,25 @@
             </button>
           </div>
 
-          <!-- Miniaturas -->
+          <!-- Miniaturas - Área Cinza Separada -->
           <div class="bg-zinc-900 py-5 border-t border-zinc-800">
             <div id="thumbnails" class="flex gap-4 justify-center px-4"></div>
           </div>
+
         </div>
 
       </div>
 
       <div class="flex flex-col">
-        <div class="text-purple-400 text-sm uppercase tracking-wide mb-2">Filamentos</div>
-        <h1 class="text-4xl md:text-5xl font-bold tracking-tight mb-6">Filamento PLA Preto 1kg</h1>
+        <div class="text-purple-400 text-sm uppercase tracking-wide mb-2">suportes</div>
+        <h1 class="text-4xl md:text-5xl font-bold tracking-tight mb-6">Porta-lápis T-REX de dinossauro</h1>
 
         <div class="text-5xl font-bold text-purple-400 mb-8">R$ 89,90</div>
 
         <div class="prose prose-invert max-w-none text-zinc-300 text-lg leading-relaxed mb-10">
           <ul class="list-disc pl-5 space-y-3">
             <li>Material: PLA premium</li>
-            <li>Diâmetro: 1.75 mm (±0.03 mm)</li>
-            <li>Temperatura de impressão: 190–220 °C</li>
-            <li>Temperatura da mesa: 0–60 °C (opcional)</li>
-            <li>Peso líquido: 1 kg</li>
-            <li>Alta fluidez e excelente aderência entre camadas</li>
-            <li>Baixo odor e não tóxico</li>
+            <li>Tamanho: 16,5 x 16 x 13</li>
           </ul>
           <p class="mt-6">Compatível com a maioria das impressoras FDM: Ender 3, CR-10, Prusa, Anycubic, etc.</p>
         </div>
@@ -209,7 +205,6 @@
     }
   });
 </script>
-
 <script>
   let currentSlide = 0;
   const totalSlides = 4;
@@ -222,7 +217,7 @@
     document.getElementById('btnImage').classList.toggle('active-view', view === 'image');
   }
 
-  function createThumbnails() {
+    function createThumbnails() {
     const thumbContainer = document.getElementById('thumbnails');
     thumbContainer.innerHTML = '';
 
@@ -249,6 +244,15 @@
   function prevSlide() {
     currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
     goToSlide(currentSlide);
+  }
+
+  function activateAR() {
+    const modelViewer = document.getElementById('modelViewer');
+    if (modelViewer && modelViewer.activateAR) {
+      modelViewer.activateAR();
+    } else {
+      alert("Modo AR não disponível neste dispositivo ou navegador.");
+    }
   }
 
   // Inicialização
