@@ -1,34 +1,39 @@
-// scene.js
-let scene, camera, renderer;
-let currentPlacedModel = null;
-let isDragging = false;
-let previousTouch = null;
+// ar/scene.js
+let scene, camera, renderer, currentModel = null;
 
-function initScene(container) {
+function initScene() {
+  const container = document.getElementById('three-container');
+  if (!container) return;
+
   scene = new THREE.Scene();
-  camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
-  
-  renderer = new THREE.WebGLRenderer({ 
-    canvas: document.getElementById('ar-canvas'),
-    antialias: true,
-    alpha: true 
-  });
-  renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.xr.enabled = true;
-  renderer.shadowMap.enabled = true;
+  camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 100);
+  camera.position.set(0, 1, 3);
 
-  // Iluminação
-  const ambient = new THREE.AmbientLight(0xffffff, 0.6);
+  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.shadowMap.enabled = true;
+  container.appendChild(renderer.domElement);
+
+  // Luzes
+  const ambient = new THREE.AmbientLight(0xffffff, 0.7);
   scene.add(ambient);
-  const directional = new THREE.DirectionalLight(0xffffff, 0.8);
-  directional.position.set(5, 10, 7);
-  directional.castShadow = true;
-  scene.add(directional);
+  const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+  dirLight.position.set(5, 10, 7);
+  dirLight.castShadow = true;
+  scene.add(dirLight);
+
+  // Animação simples no preview
+  function animate() {
+    requestAnimationFrame(animate);
+    if (currentModel) currentModel.rotation.y += 0.005;
+    renderer.render(scene, camera);
+  }
+  animate();
 
   window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.aspect = container.clientWidth / container.clientHeight;
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(container.clientWidth, container.clientHeight);
   });
 }

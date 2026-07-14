@@ -1,19 +1,19 @@
-// loader.js
-let model = null;
+// ar/loader.js
+let loadedModel = null;
 
-async function loadGLBModel(url) {
+async function loadModel(url) {
   return new Promise((resolve, reject) => {
     const loader = new THREE.GLTFLoader();
     loader.load(url, (gltf) => {
-      model = gltf.scene;
-      model.scale.set(1, 1, 1); // Escala real
-      model.traverse((child) => {
+      loadedModel = gltf.scene;
+      loadedModel.scale.set(0.8, 0.8, 0.8); // Ajuste conforme necessário
+      loadedModel.traverse((child) => {
         if (child.isMesh) {
           child.castShadow = true;
           child.receiveShadow = true;
         }
       });
-      resolve(model);
+      resolve(loadedModel);
     }, undefined, reject);
   });
 }
