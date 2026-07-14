@@ -3,36 +3,34 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Porta-lápis T-REX de dinossauro - Descomplica3D Brasil</title>
+  <title>Filamento PLA Preto 1kg - Descomplica3D Brasil</title>
   
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="../styles.css"/>
-  
   <style>
-    #btn3d.active-view,
-    #btnImage.active-view {
-      background-color: rgb(168 85 247);
-      color: white;
-      box-shadow: 0 10px 15px -3px rgba(131, 16, 185, 0.3);
-    }
-    #btn3d:not(.active-view),
-    #btnImage:not(.active-view) {
-      color: #a1a1aa;
-    }
-    #ar-container {
-      position: fixed; inset: 0; z-index: 10000; background: #000; display: none;
-    }
-    #ar-overlay {
-      position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
-      z-index: 1010; display: flex; gap: 12px;
-    }
-  </style>
+  #btn3d.active-view,
+  #btnImage.active-view {
+    background-color: rgb(168 85 247); /* purple-500 */
+    color: white;
+    box-shadow: 0 10px 15px -3px rgba(131, 16, 185, 0.3);
+  }
 
-  <!-- Three.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/loaders/GLTFLoader.min.js"></script>
+  #btn3d:not(.active-view),
+  #btnImage:not(.active-view) {
+    color: #a1a1aa;
+  }
+
+  #btn3d:hover:not(.active-view),
+  #btnImage:hover:not(.active-view) {
+    color: white;
+    background-color: #27272a;
+  }
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.2.0/model-viewer.min.js" 
+        type="module"></script>
 </head>
 <body class="bg-zinc-950 text-white">
 
@@ -69,24 +67,48 @@
     </a>
 
     <div class="grid md:grid-cols-2 gap-12 lg:gap-16">
+      
+            <!-- ==================== ÁREA VISUAL (3D + CARROSSEL) ==================== -->
       <div class="rounded-3xl overflow-hidden shadow-2xl shadow-purple-900/30 bg-zinc-900 relative">
 
-        <!-- Botões 3D / IMG -->
-        <div class="absolute top-6 left-6 z-40 flex gap-1 bg-zinc-900/95 backdrop-blur-2xl rounded-3xl p-2 border border-zinc-700 shadow-2xl">
-          <button onclick="showView('3d')" id="btn3d" class="px-7 py-3 rounded-2xl text-sm font-medium transition-all flex items-center gap-2">
-            <span>3D</span>
-          </button>
-          <button onclick="showView('image')" id="btnImage" class="px-7 py-3 rounded-2xl text-sm font-medium transition-all flex items-center gap-2">
-            <span>IMG</span>
-          </button>
-        </div>
+
+<!-- Botões de alternância -->
+<div class="absolute top-6 left-6 z-40 flex gap-1 bg-zinc-900/95 backdrop-blur-2xl rounded-3xl p-2 border border-zinc-700 shadow-2xl">
+  
+  <button onclick="showView('3d')" 
+          id="btn3d"
+          class="px-7 py-3 rounded-2xl text-sm font-medium transition-all flex items-center gap-2">
+    <span>3D</span>
+  </button>
+
+  <button onclick="showView('image')" 
+          id="btnImage"
+          class="px-7 py-3 rounded-2xl text-sm font-medium transition-all flex items-center gap-2">
+    <span>IMG</span>
+  </button>
+
+</div>
 
         <!-- ==================== VISUALIZADOR 3D ==================== -->
         <div id="view3d">
-          <div id="three-container" style="width: 100%; height: 520px; background-color: #18181b; border-radius: 1rem;"></div>
+          <model-viewer 
+            id="modelViewer"
+            src="../modelos/elefante.glb"
+            alt="Filamento PLA Preto 1kg"
+            auto-rotate 
+            camera-controls 
+            shadow-intensity="1.2"
+            exposure="0.85"
+            environment-intensity="0.75"
+            ar
+            ar-modes="webxr scene-viewer quick-look"
+            style="width: 100%; height: 520px; background-color: #18181b;"
+            loading="eager"
+            camera-orbit="45deg 55deg 3m">
+          </model-viewer>
 
-          <!-- Botão AR -->
-          <button onclick="startARSession()" 
+          <!-- Botão AR (mantido na mesma posição) -->
+          <button onclick="activateAR()" 
                   class="absolute bottom-6 left-1/2 -translate-x-1/2 
                          bg-purple-600 hover:bg-purple-500 
                          text-white px-8 py-4 rounded-2xl font-medium 
@@ -96,35 +118,44 @@
           </button>
         </div>
 
-        <!-- ==================== CARROSSEL DE IMAGENS ==================== -->
+                <!-- ==================== CARROSSEL DE IMAGENS ==================== -->
         <div id="viewImage" class="hidden flex flex-col">
+
+          <!-- Imagem Principal -->
           <div class="relative overflow-hidden">
             <div id="carousel" class="overflow-hidden">
               <div id="slides" class="flex transition-transform duration-500 ease-out h-[460px]">
                 <img src="../imagens/dino1.png" class="w-full h-full object-cover flex-shrink-0" alt="Foto 1">
                 <img src="../imagens/dino2.png" class="w-full h-full object-cover flex-shrink-0" alt="Foto 2">
-                <img src="../imagens/dino3.png" class="w-full h-full object-cover flex-shrink-0" alt="Foto 3">
+                <img src="../imagens/dino3.png"  class="w-full h-full object-cover flex-shrink-0" alt="Foto 3">
                 <img src="../imagens/dino4.png" class="w-full h-full object-cover flex-shrink-0" alt="Foto 4">
               </div>
             </div>
 
-            <button onclick="prevSlide()" class="absolute left-4 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black/90 p-4 rounded-full text-white transition z-40">
+            <!-- Setas -->
+            <button onclick="prevSlide()" 
+                    class="absolute left-4 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black/90 p-4 rounded-full text-white transition z-40">
               <i class="fa-solid fa-chevron-left text-xl"></i>
             </button>
-            <button onclick="nextSlide()" class="absolute right-4 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black/90 p-4 rounded-full text-white transition z-40">
+            <button onclick="nextSlide()" 
+                    class="absolute right-4 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black/90 p-4 rounded-full text-white transition z-40">
               <i class="fa-solid fa-chevron-right text-xl"></i>
             </button>
           </div>
 
+          <!-- Miniaturas - Área Cinza Separada -->
           <div class="bg-zinc-900 py-5 border-t border-zinc-800">
             <div id="thumbnails" class="flex gap-4 justify-center px-4"></div>
           </div>
+
         </div>
+
       </div>
 
       <div class="flex flex-col">
         <div class="text-purple-400 text-sm uppercase tracking-wide mb-2">suportes</div>
         <h1 class="text-4xl md:text-5xl font-bold tracking-tight mb-6">Porta-lápis T-REX de dinossauro</h1>
+
         <div class="text-5xl font-bold text-purple-400 mb-8">R$ 89,90</div>
 
         <div class="prose prose-invert max-w-none text-zinc-300 text-lg leading-relaxed mb-10">
@@ -135,7 +166,8 @@
           <p class="mt-6">Compatível com a maioria das impressoras FDM: Ender 3, CR-10, Prusa, Anycubic, etc.</p>
         </div>
 
-        <button onclick="addToCart(1)" class="w-full md:w-auto bg-purple-600 hover:bg-purple-500 transition py-6 px-16 rounded-3xl text-xl font-semibold">
+        <button onclick="addToCart(1)" 
+                class="w-full md:w-auto bg-purple-600 hover:bg-purple-500 transition py-6 px-16 rounded-3xl text-xl font-semibold">
           Adicionar ao Carrinho
         </button>
       </div>
@@ -150,67 +182,84 @@
     </div>
   </footer>
 
-  <!-- Container AR -->
-  <div id="ar-container">
-    <canvas id="ar-canvas" style="width:100%; height:100%; display:block;"></canvas>
-    <div id="ar-overlay" class="hidden">
-      <button onclick="exitAR()" class="bg-red-600 hover:bg-red-500 text-white px-6 py-3 rounded-2xl font-medium flex items-center gap-2">
-        <i class="fa-solid fa-xmark"></i> Sair do AR
-      </button>
-    </div>
-  </div>
-
   <script src="../script.js"></script>
-
-  <!-- AR Scripts (caminhos para GitHub Pages) -->
-  <script src="ar/loader.js"></script>
-  <script src="ar/scene.js"></script>
-  <script src="ar/ar.js"></script>
-  <script src="ar/main.js"></script>
-
   <script>
-    let currentSlide = 0;
-    const totalSlides = 4;
-
-    function showView(view) {
-      document.getElementById('view3d').classList.toggle('hidden', view !== '3d');
-      document.getElementById('viewImage').classList.toggle('hidden', view !== 'image');
-      document.getElementById('btn3d').classList.toggle('active-view', view === '3d');
-      document.getElementById('btnImage').classList.toggle('active-view', view === 'image');
+  function activateAR() {
+    const modelViewer = document.getElementById('modelViewer');
+    if (modelViewer && modelViewer.activateAR) {
+      modelViewer.activateAR();
+    } else {
+      alert("Modo AR não disponível neste dispositivo ou navegador.");
     }
+  }
+
+  // Opcional: Mostrar aviso se AR não for suportado
+  window.addEventListener('load', () => {
+    const model = document.getElementById('modelViewer');
+    if (model) {
+      model.addEventListener('ar-status', (event) => {
+        if (event.detail.status === 'failed') {
+          console.log('AR falhou');
+        }
+      });
+    }
+  });
+</script>
+<script>
+  let currentSlide = 0;
+  const totalSlides = 4;
+
+  function showView(view) {
+    document.getElementById('view3d').classList.toggle('hidden', view !== '3d');
+    document.getElementById('viewImage').classList.toggle('hidden', view !== 'image');
+
+    document.getElementById('btn3d').classList.toggle('active-view', view === '3d');
+    document.getElementById('btnImage').classList.toggle('active-view', view === 'image');
+  }
 
     function createThumbnails() {
-      const thumbContainer = document.getElementById('thumbnails');
-      thumbContainer.innerHTML = '';
-      for (let i = 0; i < totalSlides; i++) {
-        const thumb = document.createElement('img');
-        thumb.src = document.getElementById('slides').children[i].src;
-        thumb.className = `w-20 h-20 object-cover rounded-2xl cursor-pointer border-2 transition-all hover:scale-105 ${i === currentSlide ? 'border-purple-500 ring-2 ring-purple-500/50' : 'border-transparent'}`;
-        thumb.onclick = () => goToSlide(i);
-        thumbContainer.appendChild(thumb);
-      }
-    }
+    const thumbContainer = document.getElementById('thumbnails');
+    thumbContainer.innerHTML = '';
 
-    function goToSlide(n) {
-      currentSlide = n;
-      document.getElementById('slides').style.transform = `translateX(-${currentSlide * 100}%)`;
-      createThumbnails();
+    for (let i = 0; i < totalSlides; i++) {
+      const thumb = document.createElement('img');
+      thumb.src = document.getElementById('slides').children[i].src;
+      thumb.className = `w-20 h-20 object-cover rounded-2xl cursor-pointer border-2 transition-all hover:scale-105 ${i === currentSlide ? 'border-purple-500 ring-2 ring-purple-500/50' : 'border-transparent'}`;
+      thumb.onclick = () => goToSlide(i);
+      thumbContainer.appendChild(thumb);
     }
+  }
 
-    function nextSlide() {
-      currentSlide = (currentSlide + 1) % totalSlides;
-      goToSlide(currentSlide);
+  function goToSlide(n) {
+    currentSlide = n;
+    document.getElementById('slides').style.transform = `translateX(-${currentSlide * 100}%)`;
+    createThumbnails();
+  }
+
+  function nextSlide() {
+    currentSlide = (currentSlide + 1) % totalSlides;
+    goToSlide(currentSlide);
+  }
+
+  function prevSlide() {
+    currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+    goToSlide(currentSlide);
+  }
+
+  function activateAR() {
+    const modelViewer = document.getElementById('modelViewer');
+    if (modelViewer && modelViewer.activateAR) {
+      modelViewer.activateAR();
+    } else {
+      alert("Modo AR não disponível neste dispositivo ou navegador.");
     }
+  }
 
-    function prevSlide() {
-      currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-      goToSlide(currentSlide);
-    }
-
-    window.addEventListener('load', () => {
-      showView('3d');
-      createThumbnails();
-    });
-  </script>
+  // Inicialização
+  window.addEventListener('load', () => {
+    showView('3d');
+    createThumbnails();
+  });
+</script>
 </body>
 </html>
