@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Carrinho - Descomplica3D Brasil</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body class="bg-zinc-950 text-white min-h-screen flex flex-col">
+
+  <nav class="bg-black border-b border-zinc-800 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl overflow-hidden flex items-center justify-center">
+          <img src="imagens/Logo.jpg" alt="Logo" class="logo-img" onerror="this.style.display='none'">
+        </div>
+        <div>
+          <h1 class="logo-font text-3xl font-bold tracking-tighter">Descomplica3D</h1>
+          <p class="text-[10px] text-purple-400 -mt-1">BRASIL</p>
+        </div>
+      </div>
+
+      <div class="hidden md:flex items-center gap-8 text-sm font-medium">
+        <a href="index.html" class="hover:text-purple-400 transition">Início</a>
+        <a href="produtos/PaginaPrincipalProdutos.html" class="hover:text-purple-400 transition">Produtos</a>
+        <a href="arquivos/PaginaPrincipalArquivos.html" class="hover:text-purple-400 transition">Arquivos</a>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <a href="carrinho.html" class="cursor-pointer relative text-purple-400">
+          <i class="fa-solid fa-cart-shopping text-2xl"></i>
+          <span id="cart-count" class="absolute -top-2 -right-2 bg-purple-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">0</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="flex-1 max-w-7xl mx-auto px-6 py-12 w-full">
+    <div class="flex items-center justify-between mb-10">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-tight">
+        <i class="fa-solid fa-cart-shopping text-purple-500 mr-3"></i>
+        Meu Carrinho
+      </h2>
+      <button onclick="clearCart()" id="btnClear" class="text-sm text-zinc-400 hover:text-red-400 transition hidden">
+        <i class="fa-solid fa-trash-can mr-1"></i> Limpar carrinho
+      </button>
+    </div>
+
+    <!-- Carrinho vazio -->
+    <div id="emptyCart" class="hidden text-center py-24">
+      <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-zinc-900 flex items-center justify-center">
+        <i class="fa-solid fa-cart-shopping text-4xl text-zinc-600"></i>
+      </div>
+      <h3 class="text-2xl font-semibold text-zinc-300 mb-3">Seu carrinho está vazio</h3>
+      <p class="text-zinc-500 mb-8">Adicione produtos e eles aparecerão aqui.</p>
+      <a href="produtos/PaginaPrincipalProdutos.html" class="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-500 transition px-8 py-4 rounded-2xl font-semibold">
+        Ver produtos <i class="fa-solid fa-arrow-right"></i>
+      </a>
+    </div>
+
+    <!-- Conteúdo do carrinho -->
+    <div id="cartContent" class="hidden grid lg:grid-cols-3 gap-10">
+      <!-- Lista de itens -->
+      <div class="lg:col-span-2 space-y-4" id="cartItems">
+        <!-- Itens renderizados via JS -->
+      </div>
+
+      <!-- Resumo -->
+      <div class="lg:col-span-1">
+        <div class="bg-zinc-900 rounded-3xl p-8 border border-zinc-800 sticky top-28 space-y-6">
+          <h3 class="text-xl font-semibold">Resumo do pedido</h3>
+          
+          <!-- Cálculo de frete -->
+          <div class="border border-zinc-700 rounded-2xl p-5 space-y-4">
+            <div class="flex items-center gap-2 text-sm font-medium text-zinc-300">
+              <i class="fa-solid fa-truck text-purple-400"></i>
+              Calcular frete
+            </div>
+            
+            <div class="flex gap-2">
+              <input 
+                type="text" 
+                id="cepInput" 
+                maxlength="9" 
+                placeholder="00000-000"
+                class="flex-1 bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500 placeholder:text-zinc-500"
+                oninput="formatCep(this)"
+              >
+              <button 
+                onclick="calcularFrete()" 
+                id="btnCalcularFrete"
+                class="bg-purple-600 hover:bg-purple-500 transition px-5 py-3 rounded-xl text-sm font-semibold whitespace-nowrap">
+                ->
+              </button>
+            </div>
+
+            <p id="cepError" class="text-red-400 text-xs hidden"></p>
+            <p id="cepInfo" class="text-zinc-500 text-xs hidden"></p>
+
+            <!-- Opções de frete -->
+            <div id="freteOptions" class="hidden space-y-2">
+              <label class="flex items-center gap-3 p-3 rounded-xl border border-zinc-700 cursor-pointer hover:border-purple-500 transition has-[:checked]:border-purple-500 has-[:checked]:bg-purple-500/10">
+                <input type="radio" name="frete" value="pac" class="accent-purple-500" onchange="selecionarFrete()">
+                <div class="flex-1">
+                  <div class="flex justify-between items-center">
+                    <span class="font-medium text-sm">PAC</span>
+                    <span class="text-sm font-semibold" id="precoPac">R$ 0,00</span>
+                  </div>
+                  <span class="text-xs text-zinc-500" id="prazoPac">—</span>
+                </div>
+              </label>
+
+              <label class="flex items-center gap-3 p-3 rounded-xl border border-zinc-700 cursor-pointer hover:border-purple-500 transition has-[:checked]:border-purple-500 has-[:checked]:bg-purple-500/10">
+                <input type="radio" name="frete" value="sedex" class="accent-purple-500" onchange="selecionarFrete()">
+                <div class="flex-1">
+                  <div class="flex justify-between items-center">
+                    <span class="font-medium text-sm">SEDEX</span>
+                    <span class="text-sm font-semibold" id="precoSedex">R$ 0,00</span>
+                  </div>
+                  <span class="text-xs text-zinc-500" id="prazoSedex">—</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Valores -->
+          <div class="space-y-3 text-sm">
+            <div class="flex justify-between text-zinc-400">
+              <span>Subtotal</span>
+              <span id="subtotal">R$ 0,00</span>
+            </div>
+            <div class="flex justify-between text-zinc-400">
+              <span>Frete</span>
+              <span id="shippingLabel">Calcule o frete</span>
+            </div>
+            <div class="border-t border-zinc-800 pt-4 flex justify-between text-lg font-bold">
+              <span>Total</span>
+              <span class="text-purple-400" id="total">R$ 0,00</span>
+            </div>
+          </div>
+
+          <p class="text-xs text-zinc-500">
+            <i class="fa-solid fa-circle-info text-purple-400 mr-1"></i>
+            Frete grátis em pedidos acima de R$ 200 (PAC)
+          </p>
+
+          <button onclick="checkout()" class="w-full bg-purple-600 hover:bg-purple-500 transition py-4 rounded-2xl font-semibold text-lg flex items-center justify-center gap-2">
+            <i class="fa-solid fa-lock"></i>
+            Finalizar compra
+          </button>
+
+          <a href="produtos/PaginaPrincipalProdutos.html" class="block text-center text-sm text-zinc-400 hover:text-purple-400 transition">
+            Continuar comprando
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-black py-16 border-t border-zinc-800 mt-auto">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+      <h1 class="logo-font text-4xl font-bold tracking-tighter mb-4">Descomplica3D Brasil</h1>
+      <p class="text-zinc-500">Loja completa de impressora 3D • Pix instantâneo • Entrega em todo Brasil</p>
+      <p class="text-xs text-zinc-600 mt-8">© 2026 Descomplica3D Brasil</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    // Estado do frete
+    let freteSelecionado = null;
+    let freteCalculado = null;
+
+    // Formata CEP enquanto digita
+    function formatCep(input) {
+      let v = input.value.replace(/\D/g, '');
+      if (v.length > 5) v = v.slice(0, 5) + '-' + v.slice(5, 8);
+      input.value = v;
+    }
+
+    // Valida CEP (8 dígitos)
+    function validarCep(cep) {
+      return /^\d{5}-?\d{3}$/.test(cep);
+    }
+
+    // Simula cálculo de frete baseado no CEP (faixas regionais)
+    function simularFrete(cep) {
+      const digits = cep.replace(/\D/g, '');
+      const prefix = parseInt(digits.slice(0, 2), 10);
+
+      let basePac = 22;
+      let baseSedex = 38;
+      let prazoPac = 8;
+      let prazoSedex = 3;
+
+      // SP capital / região metropolitana (01x–05x)
+      if (prefix >= 1 && prefix <= 5) {
+        basePac = 15;
+        baseSedex = 28;
+        prazoPac = 4;
+        prazoSedex = 1;
+      }
+      // Interior SP / Sul (06x–19x, 80x–89x)
+      else if ((prefix >= 6 && prefix <= 19) || (prefix >= 80 && prefix <= 89)) {
+        basePac = 20;
+        baseSedex = 35;
+        prazoPac = 6;
+        prazoSedex = 2;
+      }
+      // Sudeste (exceto SP) 20x–39x
+      else if (prefix >= 20 && prefix <= 39) {
+        basePac = 25;
+        baseSedex = 42;
+        prazoPac = 7;
+        prazoSedex = 3;
+      }
+      // Nordeste / Centro-Oeste 40x–79x
+      else if (prefix >= 40 && prefix <= 79) {
+        basePac = 32;
+        baseSedex = 55;
+        prazoPac = 10;
+        prazoSedex = 4;
+      }
+      // Norte e demais
+      else {
+        basePac = 45;
+        baseSedex = 75;
+        prazoPac = 14;
+        prazoSedex = 6;
+      }
+
+      // Ajuste por quantidade de itens
+      const qtd = cart.reduce((acc, i) => acc + i.quantity, 0);
+      const extra = Math.max(0, (qtd - 1) * 4);
+
+      return {
+        pac: { preco: basePac + extra, prazo: prazoPac },
+        sedex: { preco: baseSedex + extra, prazo: prazoSedex }
+      };
+    }
+
+    function calcularFrete() {
+      const input = document.getElementById('cepInput');
+      const cep = input.value.trim();
+      const errorEl = document.getElementById('cepError');
+      const infoEl = document.getElementById('cepInfo');
+      const optionsEl = document.getElementById('freteOptions');
+      const btn = document.getElementById('btnCalcularFrete');
+
+      errorEl.classList.add('hidden');
+      infoEl.classList.add('hidden');
+
+      if (!validarCep(cep)) {
+        errorEl.textContent = 'Digite um CEP válido (ex: 01310-100)';
+        errorEl.classList.remove('hidden');
+        optionsEl.classList.add('hidden');
+        freteCalculado = null;
+        freteSelecionado = null;
+        atualizarResumo();
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
+      setTimeout(() => {
+        freteCalculado = simularFrete(cep);
+        freteSelecionado = null;
+
+        document.querySelectorAll('input[name="frete"]').forEach(r => r.checked = false);
+
+        document.getElementById('precoPac').textContent = formatPrice(freteCalculado.pac.preco);
+        document.getElementById('prazoPac').textContent = `até ${freteCalculado.pac.prazo} dias úteis`;
+        document.getElementById('precoSedex').textContent = formatPrice(freteCalculado.sedex.preco);
+        document.getElementById('prazoSedex').textContent = `até ${freteCalculado.sedex.prazo} dias úteis`;
+
+        optionsEl.classList.remove('hidden');
+        infoEl.textContent = `CEP ${cep} • valores estimados`;
+        infoEl.classList.remove('hidden');
+
+        btn.disabled = false;
+        btn.textContent = '->';
+
+        atualizarResumo();
+      }, 600);
+    }
+
+    function selecionarFrete() {
+      const selected = document.querySelector('input[name="frete"]:checked');
+      if (!selected || !freteCalculado) {
+        freteSelecionado = null;
+      } else {
+        const tipo = selected.value;
+        freteSelecionado = {
+          tipo,
+          preco: freteCalculado[tipo].preco,
+          prazo: freteCalculado[tipo].prazo
+        };
+
+        // Frete grátis PAC acima de R$ 200
+        const subtotal = getCartTotal();
+        if (tipo === 'pac' && subtotal >= 200) {
+          freteSelecionado.preco = 0;
+        }
+      }
+      atualizarResumo();
+    }
+
+    function atualizarResumo() {
+      const subtotal = getCartTotal();
+      document.getElementById('subtotal').textContent = formatPrice(subtotal);
+
+      const shippingEl = document.getElementById('shippingLabel');
+      let freteValor = 0;
+
+      if (freteSelecionado) {
+        freteValor = freteSelecionado.preco;
+        if (freteValor === 0) {
+          shippingEl.innerHTML = `<span class="text-emerald-400">Grátis (${freteSelecionado.tipo.toUpperCase()})</span>`;
+        } else {
+          shippingEl.textContent = formatPrice(freteValor) + ` (${freteSelecionado.tipo.toUpperCase()})`;
+        }
+      } else if (freteCalculado) {
+        shippingEl.textContent = 'Selecione o frete';
+      } else {
+        shippingEl.textContent = 'Calcule o frete';
+      }
+
+      document.getElementById('total').textContent = formatPrice(subtotal + freteValor);
+    }
+
+    function renderCart() {
+      const emptyEl = document.getElementById('emptyCart');
+      const contentEl = document.getElementById('cartContent');
+      const itemsEl = document.getElementById('cartItems');
+      const btnClear = document.getElementById('btnClear');
+
+      if (cart.length === 0) {
+        emptyEl.classList.remove('hidden');
+        contentEl.classList.add('hidden');
+        btnClear.classList.add('hidden');
+        freteSelecionado = null;
+        freteCalculado = null;
+        return;
+      }
+
+      emptyEl.classList.add('hidden');
+      contentEl.classList.remove('hidden');
+      btnClear.classList.remove('hidden');
+
+      itemsEl.innerHTML = cart.map(item => {
+        const imgSrc = item.image || '';
+        return `
+          <div class="bg-zinc-900 rounded-3xl p-5 flex flex-col sm:flex-row gap-5 border border-zinc-800 hover:border-zinc-700 transition">
+            <div class="w-full sm:w-28 h-28 rounded-2xl overflow-hidden bg-zinc-800 flex-shrink-0">
+              <img src="${imgSrc}" alt="${item.name}" class="w-full h-full object-cover" onerror="this.src='https://picsum.photos/200'">
+            </div>
+            
+            <div class="flex-1 flex flex-col justify-between">
+              <div>
+                <div class="text-xs text-purple-400 uppercase tracking-wide mb-1">${item.category || ''}</div>
+                <h3 class="font-semibold text-lg leading-tight">${item.name}</h3>
+                <p class="text-purple-400 font-bold mt-1">${formatPrice(item.price)}</p>
+              </div>
+
+              <div class="flex items-center justify-between mt-4 gap-4">
+                <div class="flex items-center gap-1 bg-zinc-800 rounded-2xl p-1">
+                  <button onclick="updateQuantity(${item.id}, -1)" 
+                          class="w-9 h-9 rounded-xl hover:bg-zinc-700 transition flex items-center justify-center text-zinc-300 hover:text-white">
+                    <i class="fa-solid fa-minus text-xs"></i>
+                  </button>
+                  <input type="number" min="1" value="${item.quantity}" 
+                         onchange="setQuantity(${item.id}, this.value)"
+                         class="w-12 text-center bg-transparent font-semibold focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+                  <button onclick="updateQuantity(${item.id}, 1)" 
+                          class="w-9 h-9 rounded-xl hover:bg-zinc-700 transition flex items-center justify-center text-zinc-300 hover:text-white">
+                    <i class="fa-solid fa-plus text-xs"></i>
+                  </button>
+                </div>
+
+                <div class="flex items-center gap-4">
+                  <span class="font-bold text-lg">${formatPrice(item.price * item.quantity)}</span>
+                  <button onclick="removeFromCart(${item.id})" 
+                          class="text-zinc-500 hover:text-red-400 transition p-2" title="Remover">
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      if (freteSelecionado && freteCalculado) {
+        selecionarFrete();
+      } else {
+        atualizarResumo();
+      }
+    }
+
+    function checkout() {
+      if (cart.length === 0) return;
+
+      if (!freteSelecionado) {
+        alert('Por favor, calcule e selecione o frete antes de finalizar.');
+        document.getElementById('cepInput').focus();
+        return;
+      }
+
+      const freteTxt = freteSelecionado.preco === 0
+        ? 'Grátis'
+        : formatPrice(freteSelecionado.preco);
+
+      alert(
+        '✅ Pedido finalizado com sucesso!\n\n' +
+        'Subtotal: ' + formatPrice(getCartTotal()) + '\n' +
+        'Frete (' + freteSelecionado.tipo.toUpperCase() + '): ' + freteTxt + '\n' +
+        'Total: ' + formatPrice(getCartTotal() + freteSelecionado.preco) + '\n\n' +
+        '(Em produção, aqui iria para o gateway de pagamento / Pix)'
+      );
+
+      cart = [];
+      saveCart();
+      updateCartCount();
+      freteSelecionado = null;
+      freteCalculado = null;
+      renderCart();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderCart();
+      updateCartCount();
+
+      const cepInput = document.getElementById('cepInput');
+      if (cepInput) {
+        cepInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            calcularFrete();
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

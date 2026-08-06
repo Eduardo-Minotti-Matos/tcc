@@ -153,6 +153,7 @@
     </div>
   </footer>
 
+  <script src="script.js"></script>
   <script>
   // ==================== CARROSSEL HERO ====================
   let heroSlide = 0;
@@ -195,6 +196,10 @@
                   class="text-sm text-zinc-400 hover:text-red-400 transition flex items-center gap-1">
             <i class="fa-solid fa-right-from-bracket"></i> Sair
           </button>
+          <a href="carrinho.html" class="cursor-pointer relative hover:text-purple-400 transition">
+            <i class="fa-solid fa-cart-shopping text-2xl"></i>
+            <span id="cart-count" class="absolute -top-2 -right-2 bg-purple-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">0</span>
+          </a>
         </div>
       `;
     } else {
@@ -209,10 +214,10 @@
           Cadastre-se
         </button>
 
-        <div class="cursor-pointer relative">
+        <a href="carrinho.html" class="cursor-pointer relative hover:text-purple-400 transition">
           <i class="fa-solid fa-cart-shopping text-2xl"></i>
           <span id="cart-count" class="absolute -top-2 -right-2 bg-purple-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">0</span>
-        </div>
+        </a>
       `;
     }
   }
@@ -221,6 +226,7 @@
     if (confirm("Deseja realmente sair?")) {
       localStorage.removeItem('user');
       updateUserNav();
+      updateCartCount();
     }
   }
 
@@ -267,6 +273,7 @@
 
     closeLoginModal();
     updateUserNav();
+    updateCartCount();
   }
 
   function handleRegister(e) {
@@ -285,6 +292,7 @@
     alert(`✅ Conta criada com sucesso!\nBem-vindo(a), ${name}!`);
     closeRegisterModal();
     updateUserNav();
+    updateCartCount();
   }
 
   // Fechar modais clicando fora
@@ -294,7 +302,8 @@
   // Inicialização
   window.addEventListener('load', () => {
     updateHeroDots();
-    updateUserNav();     // ← Garante que mostre o usuário se já estiver logado
+    updateUserNav();
+    updateCartCount();
   });
 </script>
 </body>
