@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Filamento PLA Preto 1kg - 3DPrint Brasil</title>
+  <title>Filamento PLA Preto 1kg - Descomplica3D Brasil</title>
   
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
@@ -53,10 +53,10 @@
       </div>
 
       <div class="flex items-center gap-6">
-        <div class="cursor-pointer relative">
+        <a href="../carrinho.html" class="cursor-pointer relative hover:text-purple-400 transition">
           <i class="fa-solid fa-cart-shopping text-2xl"></i>
           <span id="cart-count" class="absolute -top-2 -right-2 bg-purple-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">0</span>
-        </div>
+        </a>
       </div>
     </div>
   </nav>
@@ -91,20 +91,25 @@
 
         <!-- ==================== VISUALIZADOR 3D ==================== -->
         <div id="view3d">
-          <model-viewer 
+                    <model-viewer 
             id="modelViewer"
             src="../modelos/gazela.glb"
-            alt="Filamento PLA Preto 1kg"
+            alt="Porta-lápis T-REX de dinossauro"
             auto-rotate 
             camera-controls 
-            shadow-intensity="1.2"
+            shadow-intensity="1.5"
+            shadow-softness="0.8"
             exposure="0.85"
-            environment-intensity="0.75"
+            environment-intensity="0.85"
+            xr-environment
             ar
             ar-modes="webxr scene-viewer quick-look"
+            ar-scale="auto"
+            ar-placement="floor"
+            touch-action="pan-y"
             style="width: 100%; height: 520px; background-color: #18181b;"
             loading="eager"
-            camera-orbit="45deg 55deg 3m">
+            camera-orbit="45deg 55deg 2.8m">
           </model-viewer>
 
           <!-- Botão AR (mantido na mesma posição) -->
@@ -125,10 +130,10 @@
           <div class="relative overflow-hidden">
             <div id="carousel" class="overflow-hidden">
               <div id="slides" class="flex transition-transform duration-500 ease-out h-[460px]">
-                <img src="../imagens/gato1.png" class="w-full h-full object-cover flex-shrink-0" alt="Foto 1">
-                <img src="../imagens/gato2.png" class="w-full h-full object-cover flex-shrink-0" alt="Foto 2">
-                <img src="../imagens/gato3.png"  class="w-full h-full object-cover flex-shrink-0" alt="Foto 3">
-                <img src="../imagens/gato5.png" class="w-full h-full object-cover flex-shrink-0" alt="Foto 4">
+                <img src="../imagens/javali1.jpeg" class="w-full h-full object-cover flex-shrink-0" alt="Foto 1">
+                <img src="../imagens/javali2.jpeg" class="w-full h-full object-cover flex-shrink-0" alt="Foto 2">
+                <img src="../imagens/javali3.jpeg"  class="w-full h-full object-cover flex-shrink-0" alt="Foto 3">
+                <img src="../imagens/javali4.jpeg" class="w-full h-full object-cover flex-shrink-0" alt="Foto 4">
               </div>
             </div>
 
@@ -153,25 +158,20 @@
       </div>
 
       <div class="flex flex-col">
-        <div class="text-purple-400 text-sm uppercase tracking-wide mb-2">Filamentos</div>
-        <h1 class="text-4xl md:text-5xl font-bold tracking-tight mb-6">Filamento PLA Preto 1kg</h1>
+        <div class="text-purple-400 text-sm uppercase tracking-wide mb-2">Decorativo</div>
+        <h1 class="text-4xl md:text-5xl font-bold tracking-tight mb-6">Gazela Estatua Decorativa</h1>
 
-        <div class="text-5xl font-bold text-purple-400 mb-8">R$ 89,90</div>
+        <div class="text-5xl font-bold text-purple-400 mb-8">R$ 24,90</div>
 
         <div class="prose prose-invert max-w-none text-zinc-300 text-lg leading-relaxed mb-10">
           <ul class="list-disc pl-5 space-y-3">
             <li>Material: PLA premium</li>
-            <li>Diâmetro: 1.75 mm (±0.03 mm)</li>
-            <li>Temperatura de impressão: 190–220 °C</li>
-            <li>Temperatura da mesa: 0–60 °C (opcional)</li>
-            <li>Peso líquido: 1 kg</li>
-            <li>Alta fluidez e excelente aderência entre camadas</li>
-            <li>Baixo odor e não tóxico</li>
+            <li>Tamanho: 16,5 x 16 x 13</li>
           </ul>
           <p class="mt-6">Compatível com a maioria das impressoras FDM: Ender 3, CR-10, Prusa, Anycubic, etc.</p>
         </div>
 
-        <button onclick="addToCart(1)" 
+        <button onclick="addToCart(8)" 
                 class="w-full md:w-auto bg-purple-600 hover:bg-purple-500 transition py-6 px-16 rounded-3xl text-xl font-semibold">
           Adicionar ao Carrinho
         </button>
@@ -189,28 +189,6 @@
 
   <script src="../script.js"></script>
   <script>
-  function activateAR() {
-    const modelViewer = document.getElementById('modelViewer');
-    if (modelViewer && modelViewer.activateAR) {
-      modelViewer.activateAR();
-    } else {
-      alert("Modo AR não disponível neste dispositivo ou navegador.");
-    }
-  }
-
-  // Opcional: Mostrar aviso se AR não for suportado
-  window.addEventListener('load', () => {
-    const model = document.getElementById('modelViewer');
-    if (model) {
-      model.addEventListener('ar-status', (event) => {
-        if (event.detail.status === 'failed') {
-          console.log('AR falhou');
-        }
-      });
-    }
-  });
-</script>
-<script>
   let currentSlide = 0;
   const totalSlides = 4;
 
@@ -222,7 +200,7 @@
     document.getElementById('btnImage').classList.toggle('active-view', view === 'image');
   }
 
-    function createThumbnails() {
+  function createThumbnails() {
     const thumbContainer = document.getElementById('thumbnails');
     thumbContainer.innerHTML = '';
 
@@ -253,10 +231,10 @@
 
   function activateAR() {
     const modelViewer = document.getElementById('modelViewer');
-    if (modelViewer && modelViewer.activateAR) {
+    if (modelViewer && typeof modelViewer.activateAR === 'function') {
       modelViewer.activateAR();
     } else {
-      alert("Modo AR não disponível neste dispositivo ou navegador.");
+      alert("Modo AR não disponível neste dispositivo ou navegador.\n\nDica: use um celular Android com ARCore ou iPhone com iOS 12+ e acesse via HTTPS.");
     }
   }
 
@@ -264,6 +242,15 @@
   window.addEventListener('load', () => {
     showView('3d');
     createThumbnails();
+
+    const model = document.getElementById('modelViewer');
+    if (model) {
+      model.addEventListener('ar-status', (event) => {
+        if (event.detail.status === 'failed') {
+          console.warn('AR falhou:', event.detail);
+        }
+      });
+    }
   });
 </script>
 </body>

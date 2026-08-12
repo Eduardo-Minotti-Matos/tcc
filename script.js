@@ -1,13 +1,13 @@
 // Dados dos produtos (compartilhados entre todas as páginas)
 const products = [
-  { id: 1, name: "Elefante Estatua Decorativa", price: 89.90, category: "Suportes", image: "imagens/dino1.png", description: "Material: PLA premium • Tamanho: 16,5 x 16 x 13 cm • Compatível com a maioria das impressoras FDM." },
-  { id: 2, name: "Girafa Estatua Decorativa",     price: 89.90, category: "Filamentos", image: "https://picsum.photos/id/102/800/800",  description: "Acabamento fosco perfeito • Ideal para peças que serão pintadas ou protótipos visuais." },
-  { id: 3, name: "Rinoceronte Estatua Decorativa", price: 119.90, category: "Filamentos", image: "https://picsum.photos/id/201/800/800", description: "Alta resistência mecânica e química • Transparência excelente • 1.75 mm" },
-  { id: 4, name: "Leao Estatua Decorativa",  price: 1499.00, category: "Impressoras", image: "https://picsum.photos/id/29/800/800",  description: "Creality oficial • Nivelamento automático CR-Touch • Tela colorida touch • Volume 220×220×250 mm" },
-  { id: 5, name: "Javali Estatua Decorativa",    price: 199.90, category: "Resinas",    image: "https://picsum.photos/id/160/800/800", description: "Alta precisão e detalhes finos • Baixo odor • Compatível com impressoras LCD/DLP 405 nm" },
-  { id: 6, name: "Cheeta Estatua Decorativa", price: 49.90,  category: "Acessórios", image: "https://picsum.photos/id/180/800/800", description: "Bicos de latão MK8 padrão • Ótima durabilidade para PLA, PETG e ABS" },
-  { id: 7, name: "Hipopotomo Estatua Decorativa",         price: 129.90, category: "Acessórios", image: "https://picsum.photos/id/201/800/800", description: "Adesão excelente sem cola • Textura dupla-face • Compatível Ender 3 / CR-10" },
-  { id: 8, name: "Gazela Estatua Decorativa",      price: 109.90, category: "Filamentos", image: "https://picsum.photos/id/251/800/800", description: "Resistente a impactos e temperaturas mais altas • Ideal para peças funcionais" }
+  { id: 1, name: "Elefante Estatua Decorativa", price: 24.90, category: "Suportes", image: "imagens/elefante1.jpeg", description: "Miniatura de elefante em estilo low-poly, com design geométrico e aparência moderna, ideal para decoração." },
+  { id: 2, name: "Girafa Estatua Decorativa",     price: 24.90, category: "Filamentos", image: "imagens/girafa1.jpeg",  description: "Girafa decorativa em estilo low-poly, com formas angulares e visual elegante, perfeita para dar um toque divertido ao ambiente." },
+  { id: 3, name: "Rinoceronte Estatua Decorativa", price: 24.90, category: "Filamentos", image: "imagens/rino1.jpeg", description: "Rinoceronte decorativo com acabamento low-poly e formas robustas, combinando um visual moderno e imponente." },
+  { id: 4, name: "Leao Estatua Decorativa",  price: 24.90, category: "Impressoras", image: "imagens/leao1.jpeg",  description: "Leão em estilo low-poly, com juba marcante e design geométrico, trazendo personalidade e presença para a decoração." },
+  { id: 5, name: "Javali Estatua Decorativa",    price: 24.90, category: "Resinas",    image: "imagens/javali1.jpeg", description: "Javali em estilo low-poly, com detalhes geométricos e aparência marcante, uma peça diferenciada para decoração." },
+  { id: 6, name: "Cheeta Estatua Decorativa", price: 24.90,  category: "Acessórios", image: "imagens/elefante1.jpeg", description: "Bicos de latão MK8 padrão • Ótima durabilidade para PLA, PETG e ABS" },
+  { id: 7, name: "Hipopotomo Estatua Decorativa",         price: 24.90, category: "Acessórios", image: "imagens/elefante1.jpeg", description: "Adesão excelente sem cola • Textura dupla-face • Compatível Ender 3 / CR-10" },
+  { id: 8, name: "Gazela Estatua Decorativa",      price: 24.90, category: "Filamentos", image: "imagens/elefante1.jpeg", description: "Resistente a impactos e temperaturas mais altas • Ideal para peças funcionais" }
 ];
 
 // Carrega carrinho do localStorage
