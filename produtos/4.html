@@ -94,7 +94,7 @@
                     <model-viewer 
             id="modelViewer"
             src="../modelos/leao.glb"
-            alt="Filamento PLA Preto 1kg"
+            alt="Porta-lápis T-REX de dinossauro"
             auto-rotate 
             camera-controls 
             shadow-intensity="1.5"
@@ -104,7 +104,7 @@
             xr-environment
             ar
             ar-modes="webxr scene-viewer quick-look"
-            ar-scale="fixed"
+            ar-scale="auto"
             ar-placement="floor"
             touch-action="pan-y"
             style="width: 100%; height: 520px; background-color: #18181b;"
@@ -189,28 +189,6 @@
 
   <script src="../script.js"></script>
   <script>
-  function activateAR() {
-    const modelViewer = document.getElementById('modelViewer');
-    if (modelViewer && modelViewer.activateAR) {
-      modelViewer.activateAR();
-    } else {
-      alert("Modo AR não disponível neste dispositivo ou navegador.");
-    }
-  }
-
-  // Opcional: Mostrar aviso se AR não for suportado
-  window.addEventListener('load', () => {
-    const model = document.getElementById('modelViewer');
-    if (model) {
-      model.addEventListener('ar-status', (event) => {
-        if (event.detail.status === 'failed') {
-          console.log('AR falhou');
-        }
-      });
-    }
-  });
-</script>
-<script>
   let currentSlide = 0;
   const totalSlides = 4;
 
@@ -222,7 +200,7 @@
     document.getElementById('btnImage').classList.toggle('active-view', view === 'image');
   }
 
-    function createThumbnails() {
+  function createThumbnails() {
     const thumbContainer = document.getElementById('thumbnails');
     thumbContainer.innerHTML = '';
 
@@ -253,10 +231,10 @@
 
   function activateAR() {
     const modelViewer = document.getElementById('modelViewer');
-    if (modelViewer && modelViewer.activateAR) {
+    if (modelViewer && typeof modelViewer.activateAR === 'function') {
       modelViewer.activateAR();
     } else {
-      alert("Modo AR não disponível neste dispositivo ou navegador.");
+      alert("Modo AR não disponível neste dispositivo ou navegador.\n\nDica: use um celular Android com ARCore ou iPhone com iOS 12+ e acesse via HTTPS.");
     }
   }
 
@@ -264,6 +242,15 @@
   window.addEventListener('load', () => {
     showView('3d');
     createThumbnails();
+
+    const model = document.getElementById('modelViewer');
+    if (model) {
+      model.addEventListener('ar-status', (event) => {
+        if (event.detail.status === 'failed') {
+          console.warn('AR falhou:', event.detail);
+        }
+      });
+    }
   });
 </script>
 </body>
