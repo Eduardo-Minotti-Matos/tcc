@@ -5,9 +5,9 @@ const products = [
   { id: 3, name: "Rinoceronte Estatua Decorativa", price: 24.90, category: "Filamentos", image: "imagens/rino1.jpeg", description: "Rinoceronte decorativo com acabamento low-poly e formas robustas, combinando um visual moderno e imponente." },
   { id: 4, name: "Leao Estatua Decorativa",  price: 24.90, category: "Impressoras", image: "imagens/leao1.jpeg",  description: "Leão em estilo low-poly, com juba marcante e design geométrico, trazendo personalidade e presença para a decoração." },
   { id: 5, name: "Javali Estatua Decorativa",    price: 24.90, category: "Resinas",    image: "imagens/javali1.jpeg", description: "Javali em estilo low-poly, com detalhes geométricos e aparência marcante, uma peça diferenciada para decoração." },
-  { id: 6, name: "Cheeta Estatua Decorativa", price: 24.90,  category: "Acessórios", image: "imagens/elefante1.jpeg", description: "Bicos de latão MK8 padrão • Ótima durabilidade para PLA, PETG e ABS" },
-  { id: 7, name: "Hipopotomo Estatua Decorativa",         price: 24.90, category: "Acessórios", image: "imagens/elefante1.jpeg", description: "Adesão excelente sem cola • Textura dupla-face • Compatível Ender 3 / CR-10" },
-  { id: 8, name: "Gazela Estatua Decorativa",      price: 24.90, category: "Filamentos", image: "imagens/elefante1.jpeg", description: "Resistente a impactos e temperaturas mais altas • Ideal para peças funcionais" }
+  { id: 6, name: "Cheeta Estatua Decorativa", price: 24.90,  category: "Acessórios", image: "imagens/chetaa1.png", description: "Miniatura de cheetah em estilo low-poly, com formas geométricas e pose elegante, perfeita para uma decoração moderna e marcante." },
+  { id: 7, name: "Hipopotomo Estatua Decorativa",         price: 24.90, category: "Acessórios", image: "imagens/hipo1.png", description: "Hipopótamo em estilo low-poly, com formas robustas e visual divertido, uma peça decorativa moderna e cheia de personalidade" },
+  { id: 8, name: "Gazela Estatua Decorativa",      price: 24.90, category: "Filamentos", image: "imagens/gazela1.png", description: "Gazela decorativa em estilo low-poly, com design delicado e formas angulares, ideal para trazer um toque de elegância e natureza ao ambiente" }
 ];
 
 // Carrega carrinho do localStorage
