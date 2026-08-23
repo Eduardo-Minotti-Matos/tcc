@@ -161,6 +161,122 @@
     </div>
   </main>
 
+  <!-- Modal de Pagamento -->
+  <div id="paymentModal" class="hidden fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+
+      <div class="flex items-center justify-between p-6 border-b border-zinc-800">
+        <h3 class="text-xl font-bold">Finalizar pagamento</h3>
+        <button onclick="fecharModalPagamento()" class="text-zinc-500 hover:text-white transition">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+
+      <div class="p-6 space-y-6" id="paymentModalBody">
+
+        <!-- Abas de método de pagamento -->
+        <div class="grid grid-cols-3 gap-2" id="paymentTabs">
+          <button type="button" onclick="selecionarMetodoPagamento('pix')" data-method="pix"
+            class="payment-tab flex flex-col items-center gap-2 p-4 rounded-2xl border border-zinc-700 hover:border-purple-500 transition">
+            <i class="fa-solid fa-bolt text-2xl"></i>
+            <span class="text-xs font-semibold">Pix</span>
+          </button>
+          <button type="button" onclick="selecionarMetodoPagamento('cartao')" data-method="cartao"
+            class="payment-tab flex flex-col items-center gap-2 p-4 rounded-2xl border border-zinc-700 hover:border-purple-500 transition">
+            <i class="fa-solid fa-credit-card text-2xl"></i>
+            <span class="text-xs font-semibold">Cartão</span>
+          </button>
+          <button type="button" onclick="selecionarMetodoPagamento('boleto')" data-method="boleto"
+            class="payment-tab flex flex-col items-center gap-2 p-4 rounded-2xl border border-zinc-700 hover:border-purple-500 transition">
+            <i class="fa-solid fa-barcode text-2xl"></i>
+            <span class="text-xs font-semibold">Boleto</span>
+          </button>
+        </div>
+
+        <!-- Resumo rápido -->
+        <div class="flex justify-between items-center bg-zinc-800/50 rounded-2xl px-5 py-4 text-sm">
+          <span class="text-zinc-400">Total a pagar</span>
+          <span class="font-bold text-lg text-purple-400" id="paymentTotal">R$ 0,00</span>
+        </div>
+
+        <!-- PIX -->
+        <div id="pixContent" class="hidden space-y-4">
+          <div class="bg-white rounded-2xl p-6 flex items-center justify-center">
+            <div class="w-40 h-40 bg-zinc-200 rounded-xl flex items-center justify-center">
+              <i class="fa-solid fa-qrcode text-6xl text-zinc-800"></i>
+            </div>
+          </div>
+          <p class="text-xs text-zinc-500 text-center">Escaneie o QR Code no app do seu banco ou copie o código Pix abaixo</p>
+          <div class="bg-zinc-800 rounded-xl p-3 flex items-center gap-2">
+            <p id="pixCodigoTexto" class="text-[11px] text-zinc-400 truncate flex-1"></p>
+            <button type="button" onclick="copiarPix()" class="text-purple-400 hover:text-purple-300 text-sm font-semibold whitespace-nowrap">
+              <i class="fa-regular fa-copy"></i> Copiar
+            </button>
+          </div>
+          <button type="button" onclick="processarPagamento('pix')" class="w-full bg-purple-600 hover:bg-purple-500 transition py-4 rounded-2xl font-semibold">
+            Já efetuei o pagamento
+          </button>
+        </div>
+
+        <!-- CARTÃO -->
+        <div id="cartaoContent" class="hidden space-y-4">
+          <form onsubmit="event.preventDefault(); processarPagamento('cartao');" class="space-y-4">
+            <div>
+              <label class="text-xs text-zinc-400 mb-1 block">Número do cartão</label>
+              <input type="text" id="cardNumero" inputmode="numeric" placeholder="0000 0000 0000 0000" maxlength="19" oninput="formatCardNumber(this)" required
+                class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500">
+            </div>
+            <div>
+              <label class="text-xs text-zinc-400 mb-1 block">Nome impresso no cartão</label>
+              <input type="text" id="cardNome" placeholder="Como está no cartão" required
+                class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500">
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="text-xs text-zinc-400 mb-1 block">Validade</label>
+                <input type="text" id="cardValidade" placeholder="MM/AA" maxlength="5" oninput="formatCardValidade(this)" required
+                  class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500">
+              </div>
+              <div>
+                <label class="text-xs text-zinc-400 mb-1 block">CVV</label>
+                <input type="text" id="cardCvv" inputmode="numeric" placeholder="000" maxlength="4" oninput="formatCardCvv(this)" required
+                  class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500">
+              </div>
+            </div>
+            <div>
+              <label class="text-xs text-zinc-400 mb-1 block">Parcelamento</label>
+              <select id="parcelasSelect"
+                class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500"></select>
+            </div>
+            <button type="submit" class="w-full bg-purple-600 hover:bg-purple-500 transition py-4 rounded-2xl font-semibold">
+              Pagar com cartão
+            </button>
+          </form>
+        </div>
+
+        <!-- BOLETO -->
+        <div id="boletoContent" class="hidden space-y-4">
+          <div class="bg-zinc-800 rounded-xl p-4 space-y-2">
+            <p class="text-xs text-zinc-500">Código de barras</p>
+            <p id="boletoCodigoTexto" class="text-sm font-mono break-all"></p>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-zinc-400">Vencimento</span>
+            <span id="boletoVencimentoTexto" class="font-semibold"></span>
+          </div>
+          <p class="text-xs text-zinc-500">O pedido será confirmado em até 3 dias úteis após a compensação do pagamento.</p>
+          <button type="button" onclick="copiarBoleto()" class="w-full bg-zinc-800 hover:bg-zinc-700 transition py-3 rounded-2xl font-semibold text-sm">
+            <i class="fa-regular fa-copy"></i> Copiar código de barras
+          </button>
+          <button type="button" onclick="processarPagamento('boleto')" class="w-full bg-purple-600 hover:bg-purple-500 transition py-4 rounded-2xl font-semibold">
+            Confirmar geração do boleto
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
   <footer class="bg-black py-16 border-t border-zinc-800 mt-auto">
     <div class="max-w-7xl mx-auto px-6 text-center">
       <h1 class="logo-font text-4xl font-bold tracking-tighter mb-4">Descomplica3D Brasil</h1>
@@ -411,24 +527,205 @@
         return;
       }
 
-      const freteTxt = freteSelecionado.preco === 0
-        ? 'Grátis'
-        : formatPrice(freteSelecionado.preco);
+      abrirModalPagamento();
+    }
 
-      alert(
-        '✅ Pedido finalizado com sucesso!\n\n' +
-        'Subtotal: ' + formatPrice(getCartTotal()) + '\n' +
-        'Frete (' + freteSelecionado.tipo.toUpperCase() + '): ' + freteTxt + '\n' +
-        'Total: ' + formatPrice(getCartTotal() + freteSelecionado.preco) + '\n\n' +
-        '(Em produção, aqui iria para o gateway de pagamento / Pix)'
-      );
+    // ===== MODAL DE PAGAMENTO =====
 
+    let metodoPagamentoAtual = null;
+    let pixCodigo = '';
+    let boletoCodigo = '';
+    let boletoVencimento = '';
+
+    function abrirModalPagamento() {
+      document.getElementById('paymentTotal').textContent = formatPrice(getCartTotal() + freteSelecionado.preco);
+      document.getElementById('paymentModal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      selecionarMetodoPagamento('pix');
+    }
+
+    function fecharModalPagamento() {
+      document.getElementById('paymentModal').classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    function selecionarMetodoPagamento(metodo) {
+      metodoPagamentoAtual = metodo;
+
+      document.querySelectorAll('.payment-tab').forEach(tab => {
+        const ativo = tab.dataset.method === metodo;
+        tab.classList.toggle('border-purple-500', ativo);
+        tab.classList.toggle('bg-purple-500/10', ativo);
+      });
+
+      ['pix', 'cartao', 'boleto'].forEach(m => {
+        document.getElementById(m + 'Content').classList.toggle('hidden', m !== metodo);
+      });
+
+      if (metodo === 'pix' && !pixCodigo) gerarPix();
+      if (metodo === 'boleto' && !boletoCodigo) gerarBoleto();
+      if (metodo === 'cartao') popularParcelas();
+    }
+
+    function gerarCodigoAleatorio(tamanho) {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let out = '';
+      for (let i = 0; i < tamanho; i++) out += chars[Math.floor(Math.random() * chars.length)];
+      return out;
+    }
+
+    function gerarPix() {
+      pixCodigo = '00020126580014BR.GOV.BCB.PIX' + gerarCodigoAleatorio(32) +
+        '5204000053039865802BR5913Descomplica3D6009SAOPAULO62070503***6304' + gerarCodigoAleatorio(4);
+      document.getElementById('pixCodigoTexto').textContent = pixCodigo;
+    }
+
+    function copiarPix() {
+      navigator.clipboard.writeText(pixCodigo).then(() => showToast('Código Pix copiado!'));
+    }
+
+    function gerarBoleto() {
+      boletoCodigo = gerarCodigoAleatorio(5) + '.' + gerarCodigoAleatorio(5) + ' ' +
+        gerarCodigoAleatorio(5) + '.' + gerarCodigoAleatorio(6) + ' ' +
+        gerarCodigoAleatorio(5) + '.' + gerarCodigoAleatorio(6) + ' ' +
+        Math.floor(Math.random() * 9) + ' ' + gerarCodigoAleatorio(14);
+
+      const venc = new Date();
+      venc.setDate(venc.getDate() + 3);
+      boletoVencimento = venc.toLocaleDateString('pt-BR');
+
+      document.getElementById('boletoCodigoTexto').textContent = boletoCodigo;
+      document.getElementById('boletoVencimentoTexto').textContent = boletoVencimento;
+    }
+
+    function copiarBoleto() {
+      navigator.clipboard.writeText(boletoCodigo.replace(/[.\s]/g, '')).then(() => showToast('Código de barras copiado!'));
+    }
+
+    // Formatação dos campos do cartão
+    function formatCardNumber(input) {
+      let v = input.value.replace(/\D/g, '').slice(0, 16);
+      input.value = v.replace(/(\d{4})(?=\d)/g, '$1 ');
+    }
+
+    function formatCardValidade(input) {
+      let v = input.value.replace(/\D/g, '').slice(0, 4);
+      if (v.length > 2) v = v.slice(0, 2) + '/' + v.slice(2);
+      input.value = v;
+    }
+
+    function formatCardCvv(input) {
+      input.value = input.value.replace(/\D/g, '').slice(0, 4);
+    }
+
+    function popularParcelas() {
+      const select = document.getElementById('parcelasSelect');
+      if (!select || !freteSelecionado) return;
+
+      const total = getCartTotal() + freteSelecionado.preco;
+      select.innerHTML = '';
+
+      for (let i = 1; i <= 12; i++) {
+        const valorParcela = total / i;
+        if (i > 1 && valorParcela < 25) break; // parcela mínima de R$ 25
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = `${i}x de ${formatPrice(valorParcela)} sem juros`;
+        select.appendChild(opt);
+      }
+    }
+
+    function validarCartao() {
+      const numero = document.getElementById('cardNumero').value.replace(/\s/g, '');
+      const nome = document.getElementById('cardNome').value.trim();
+      const validade = document.getElementById('cardValidade').value;
+      const cvv = document.getElementById('cardCvv').value;
+
+      if (numero.length < 13 || numero.length > 16) {
+        showToast('Número de cartão inválido');
+        return false;
+      }
+      if (!nome) {
+        showToast('Informe o nome impresso no cartão');
+        return false;
+      }
+      if (!/^\d{2}\/\d{2}$/.test(validade)) {
+        showToast('Validade inválida (MM/AA)');
+        return false;
+      }
+      const mes = parseInt(validade.split('/')[0], 10);
+      if (mes < 1 || mes > 12) {
+        showToast('Mês de validade inválido');
+        return false;
+      }
+      if (cvv.length < 3) {
+        showToast('CVV inválido');
+        return false;
+      }
+      return true;
+    }
+
+    function processarPagamento(metodo) {
+      if (metodo === 'cartao' && !validarCartao()) return;
+
+      const body = document.getElementById('paymentModalBody');
+      body.innerHTML = `
+        <div class="py-16 text-center">
+          <i class="fa-solid fa-spinner fa-spin text-4xl text-purple-500 mb-4"></i>
+          <p class="text-zinc-400">Processando pagamento...</p>
+        </div>
+      `;
+
+      setTimeout(() => finalizarPedido(metodo), 1800);
+    }
+
+    function finalizarPedido(metodo) {
+      const body = document.getElementById('paymentModalBody');
+      const subtotal = getCartTotal();
+      const totalFinal = subtotal + freteSelecionado.preco;
+
+      let mensagemStatus = '';
+      let icone = 'fa-circle-check text-emerald-400';
+      let titulo = 'Pedido confirmado!';
+
+      if (metodo === 'pix') {
+        mensagemStatus = 'Pagamento aprovado via Pix!';
+      } else if (metodo === 'cartao') {
+        const parcelas = document.getElementById('parcelasSelect') ? document.getElementById('parcelasSelect').value : 1;
+        mensagemStatus = `Pagamento aprovado no cartão em ${parcelas}x!`;
+      } else {
+        titulo = 'Pedido registrado!';
+        icone = 'fa-circle-info text-amber-400';
+        mensagemStatus = `Boleto gerado! Vencimento em ${boletoVencimento}. O pedido será confirmado após a compensação.`;
+      }
+
+      body.innerHTML = `
+        <div class="py-10 text-center space-y-4">
+          <i class="fa-solid ${icone} text-5xl"></i>
+          <h4 class="text-xl font-bold">${titulo}</h4>
+          <p class="text-zinc-400 text-sm px-4">${mensagemStatus}</p>
+          <div class="bg-zinc-800/50 rounded-2xl p-5 text-sm text-left space-y-2 mx-4">
+            <div class="flex justify-between text-zinc-400"><span>Subtotal</span><span>${formatPrice(subtotal)}</span></div>
+            <div class="flex justify-between text-zinc-400"><span>Frete (${freteSelecionado.tipo.toUpperCase()})</span><span>${freteSelecionado.preco === 0 ? 'Grátis' : formatPrice(freteSelecionado.preco)}</span></div>
+            <div class="flex justify-between font-bold border-t border-zinc-700 pt-2"><span>Total</span><span class="text-purple-400">${formatPrice(totalFinal)}</span></div>
+          </div>
+          <button type="button" onclick="concluirPedido()" class="mt-4 bg-purple-600 hover:bg-purple-500 transition px-8 py-3 rounded-2xl font-semibold">
+            Concluir
+          </button>
+        </div>
+      `;
+    }
+
+    function concluirPedido() {
       cart = [];
       saveCart();
       updateCartCount();
       freteSelecionado = null;
       freteCalculado = null;
-      renderCart();
+      pixCodigo = '';
+      boletoCodigo = '';
+      fecharModalPagamento();
+      location.reload();
     }
 
     document.addEventListener('DOMContentLoaded', () => {
