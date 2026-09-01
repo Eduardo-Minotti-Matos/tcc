@@ -43,15 +43,6 @@ async function loadProductsFromFirebase() {
 // ========== CARRINHO ==========
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-// Garante type nos itens antigos do carrinho
-cart = cart.map(item => {
-  if (!item.type) {
-    const p = products.find(pr => pr.id == item.id);
-    item.type = p ? p.type : "product";
-  }
-  return item;
-});
-
 function saveCart() {
   localStorage.setItem("cart", JSON.stringify(cart));
 }
@@ -63,15 +54,42 @@ function updateCartCount() {
   });
 }
 
-function addToCart(id, quantity = 1) {
-  const product = products.find(p => p.id == id);
+async function addToCart(id, quantity = 1) {
+  if (!products.length) {
+    await loadProductsFromFirebase();
+  }
+
+  let product = products.find(p => String(p.id) === String(id));
+
   if (!product) {
-    console.warn("Produto não encontrado:", id);
+    try {
+      const doc = await db.collection("products").doc(String(id)).get();
+      if (doc.exists) {
+        const data = doc.data();
+        product = {
+          id: doc.id,
+          name: data.name || "",
+          price: Number(data.price) || 0,
+          category: data.category || "",
+          image: data.image || "",
+          description: data.description || "",
+          type: data.type || "product",
+          active: data.active !== false
+        };
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  if (!product) {
+    console.warn("Produto não encontrado. ID usado:", id);
+    console.warn("IDs carregados:", products.map(p => p.id));
     showToast("Produto não encontrado");
     return;
   }
 
-  const existing = cart.find(item => item.id == id);
+  const existing = cart.find(item => String(item.id) === String(id));
   if (existing) {
     existing.quantity += quantity;
   } else {
@@ -84,7 +102,7 @@ function addToCart(id, quantity = 1) {
 }
 
 function removeFromCart(id) {
-  cart = cart.filter(item => item.id != id);
+  cart = cart.filter(item => String(item.id) !== String(id));
   saveCart();
   updateCartCount();
   if (typeof renderCart === "function") renderCart();
@@ -92,7 +110,7 @@ function removeFromCart(id) {
 }
 
 function updateQuantity(id, delta) {
-  const item = cart.find(i => i.id == id);
+  const item = cart.find(i => String(i.id) === String(id));
   if (!item) return;
 
   item.quantity += delta;
@@ -107,7 +125,7 @@ function updateQuantity(id, delta) {
 }
 
 function setQuantity(id, qty) {
-  const item = cart.find(i => i.id == id);
+  const item = cart.find(i => String(i.id) === String(id));
   if (!item) return;
 
   const num = parseInt(qty, 10);
@@ -166,7 +184,6 @@ function showToast(message, duration = 2800) {
   }, duration);
 }
 
-// Salva pedido no Firebase (opcional – use depois do pagamento)
 async function saveOrderToFirebase(orderData) {
   try {
     const docRef = await db.collection("orders").add({
@@ -181,12 +198,93 @@ async function saveOrderToFirebase(orderData) {
   }
 }
 
+// Renderiza cards de produtos físicos (type === "product")
+function renderProductsPage() {
+  const grid = document.getElementById("products-grid");
+  if (!grid) return;
+
+  const list = products.filter(p => p.type === "product");
+
+  if (!list.length) {
+    grid.innerHTML = '<p class="text-zinc-500 col-span-full">Nenhum produto encontrado no Firebase.</p>';
+    return;
+  }
+
+  grid.innerHTML = list.map(p => {
+    const img = p.image
+      ? (p.image.startsWith("http") || p.image.startsWith("../") ? p.image : "../" + p.image)
+      : "https://picsum.photos/400";
+    return `
+      <div class="bg-zinc-900 rounded-3xl overflow-hidden border border-zinc-800 hover:border-purple-500/40 transition">
+        <img src="${img}" class="w-full h-64 object-cover" alt="${p.name}"
+             onerror="this.src='https://picsum.photos/400'">
+        <div class="p-6">
+          <h3 class="font-semibold text-lg">${p.name}</h3>
+          <p class="text-purple-400 text-2xl font-bold mt-2">${formatPrice(p.price)}</p>
+          <div class="flex gap-3 mt-6">
+            <button onclick="addToCart('${p.id}')"
+              class="flex-1 bg-purple-500 hover:bg-purple-600 py-4 rounded-3xl text-sm font-semibold">
+              ADICIONAR
+            </button>
+            <a href="../produtos/detalhe.html?id=${p.id}"
+              class="flex-1 border border-white/30 hover:bg-white/10 py-4 rounded-3xl text-sm font-semibold text-center">
+              DETALHES
+            </a>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+// Renderiza cards de arquivos digitais (type === "file")
+function renderArquivosPage() {
+  const grid = document.getElementById("arquivos-grid");
+  if (!grid) return;
+
+  const list = products.filter(p => p.type === "file");
+
+  if (!list.length) {
+    grid.innerHTML = '<p class="text-zinc-500 col-span-full">Nenhum arquivo encontrado no Firebase.</p>';
+    return;
+  }
+
+  grid.innerHTML = list.map(p => {
+    const img = p.image
+      ? (p.image.startsWith("http") || p.image.startsWith("../") ? p.image : "../" + p.image)
+      : "https://picsum.photos/400";
+    return `
+      <div class="bg-zinc-900 rounded-3xl overflow-hidden border border-zinc-800 hover:border-purple-500/40 transition">
+        <div class="relative">
+          <img src="${img}" class="w-full h-64 object-cover" alt="${p.name}"
+               onerror="this.src='https://picsum.photos/400'">
+          <span class="absolute top-3 left-3 bg-purple-600/90 text-xs font-semibold px-3 py-1 rounded-full">Arquivo digital</span>
+        </div>
+        <div class="p-6">
+          <h3 class="font-semibold text-lg">${p.name}</h3>
+          <p class="text-zinc-500 text-sm mt-1">STL • Pronto para impressão</p>
+          <p class="text-purple-400 text-2xl font-bold mt-2">${formatPrice(p.price)}</p>
+          <div class="flex gap-3 mt-6">
+            <button onclick="addToCart('${p.id}')"
+              class="flex-1 bg-purple-500 hover:bg-purple-600 py-4 rounded-3xl text-sm font-semibold">
+              ADICIONAR
+            </button>
+            <a href="../arquivos/detalhe.html?id=${p.id}"
+              class="flex-1 border border-white/30 hover:bg-white/10 py-4 rounded-3xl text-sm font-semibold text-center">
+              DETALHES
+            </a>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
 // Inicialização
 document.addEventListener("DOMContentLoaded", async () => {
   await loadProductsFromFirebase();
   updateCartCount();
 
-  if (typeof renderProductsPage === "function") {
-    renderProductsPage();
-  }
+  if (typeof renderProductsPage === "function") renderProductsPage();
+  if (typeof renderArquivosPage === "function") renderArquivosPage();
 });
