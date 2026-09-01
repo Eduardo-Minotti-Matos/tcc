@@ -50,58 +50,46 @@
       </button>
     </div>
 
-    <!-- Carrinho vazio -->
     <div id="emptyCart" class="hidden text-center py-24">
       <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-zinc-900 flex items-center justify-center">
         <i class="fa-solid fa-cart-shopping text-4xl text-zinc-600"></i>
       </div>
       <h3 class="text-2xl font-semibold text-zinc-300 mb-3">Seu carrinho está vazio</h3>
-      <p class="text-zinc-500 mb-8">Adicione produtos e eles aparecerão aqui.</p>
-      <a href="produtos/PaginaPrincipalProdutos.html" class="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-500 transition px-8 py-4 rounded-2xl font-semibold">
-        Ver produtos <i class="fa-solid fa-arrow-right"></i>
-      </a>
+      <p class="text-zinc-500 mb-8">Adicione produtos ou arquivos e eles aparecerão aqui.</p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="produtos/PaginaPrincipalProdutos.html" class="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-500 transition px-8 py-4 rounded-2xl font-semibold">
+          Ver produtos <i class="fa-solid fa-arrow-right"></i>
+        </a>
+        <a href="arquivos/PaginaPrincipalArquivos.html" class="inline-flex items-center gap-2 border border-white/30 hover:bg-white/10 transition px-8 py-4 rounded-2xl font-semibold">
+          Ver arquivos <i class="fa-solid fa-arrow-right"></i>
+        </a>
+      </div>
     </div>
 
-    <!-- Conteúdo do carrinho -->
     <div id="cartContent" class="hidden grid lg:grid-cols-3 gap-10">
-      <!-- Lista de itens -->
-      <div class="lg:col-span-2 space-y-4" id="cartItems">
-        <!-- Itens renderizados via JS -->
-      </div>
+      <div class="lg:col-span-2 space-y-4" id="cartItems"></div>
 
-      <!-- Resumo -->
       <div class="lg:col-span-1">
         <div class="bg-zinc-900 rounded-3xl p-8 border border-zinc-800 sticky top-28 space-y-6">
           <h3 class="text-xl font-semibold">Resumo do pedido</h3>
           
-          <!-- Cálculo de frete -->
-          <div class="border border-zinc-700 rounded-2xl p-5 space-y-4">
+          <div class="border border-zinc-700 rounded-2xl p-5 space-y-4" id="freteBox">
             <div class="flex items-center gap-2 text-sm font-medium text-zinc-300">
               <i class="fa-solid fa-truck text-purple-400"></i>
               Calcular frete
             </div>
             
             <div class="flex gap-2">
-              <input 
-                type="text" 
-                id="cepInput" 
-                maxlength="9" 
-                placeholder="00000-000"
+              <input type="text" id="cepInput" maxlength="9" placeholder="00000-000"
                 class="flex-1 bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500 placeholder:text-zinc-500"
-                oninput="formatCep(this)"
-              >
-              <button 
-                onclick="calcularFrete()" 
-                id="btnCalcularFrete"
-                class="bg-purple-600 hover:bg-purple-500 transition px-5 py-3 rounded-xl text-sm font-semibold whitespace-nowrap">
-                ->
-              </button>
+                oninput="formatCep(this)">
+              <button onclick="calcularFrete()" id="btnCalcularFrete"
+                class="bg-purple-600 hover:bg-purple-500 transition px-5 py-3 rounded-xl text-sm font-semibold whitespace-nowrap">-></button>
             </div>
 
             <p id="cepError" class="text-red-400 text-xs hidden"></p>
             <p id="cepInfo" class="text-zinc-500 text-xs hidden"></p>
 
-            <!-- Opções de frete -->
             <div id="freteOptions" class="hidden space-y-2">
               <label class="flex items-center gap-3 p-3 rounded-xl border border-zinc-700 cursor-pointer hover:border-purple-500 transition has-[:checked]:border-purple-500 has-[:checked]:bg-purple-500/10">
                 <input type="radio" name="frete" value="pac" class="accent-purple-500" onchange="selecionarFrete()">
@@ -113,7 +101,6 @@
                   <span class="text-xs text-zinc-500" id="prazoPac">—</span>
                 </div>
               </label>
-
               <label class="flex items-center gap-3 p-3 rounded-xl border border-zinc-700 cursor-pointer hover:border-purple-500 transition has-[:checked]:border-purple-500 has-[:checked]:bg-purple-500/10">
                 <input type="radio" name="frete" value="sedex" class="accent-purple-500" onchange="selecionarFrete()">
                 <div class="flex-1">
@@ -127,14 +114,13 @@
             </div>
           </div>
 
-          <!-- Valores -->
           <div class="space-y-3 text-sm">
             <div class="flex justify-between text-zinc-400">
               <span>Subtotal</span>
               <span id="subtotal">R$ 0,00</span>
             </div>
             <div class="flex justify-between text-zinc-400">
-              <span>Frete</span>
+              <span>Frete / Envio</span>
               <span id="shippingLabel">Calcule o frete</span>
             </div>
             <div class="border-t border-zinc-800 pt-4 flex justify-between text-lg font-bold">
@@ -145,7 +131,7 @@
 
           <p class="text-xs text-zinc-500">
             <i class="fa-solid fa-circle-info text-purple-400 mr-1"></i>
-            Frete grátis em pedidos acima de R$ 200 (PAC)
+            Frete grátis em pedidos acima de R$ 200 (PAC). Arquivos digitais são enviados por e-mail.
           </p>
 
           <button onclick="checkout()" class="w-full bg-purple-600 hover:bg-purple-500 transition py-4 rounded-2xl font-semibold text-lg flex items-center justify-center gap-2">
@@ -161,10 +147,8 @@
     </div>
   </main>
 
-  <!-- Modal de Pagamento -->
   <div id="paymentModal" class="hidden fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-zinc-900 border border-zinc-800 rounded-3xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-
       <div class="flex items-center justify-between p-6 border-b border-zinc-800">
         <h3 class="text-xl font-bold">Finalizar pagamento</h3>
         <button onclick="fecharModalPagamento()" class="text-zinc-500 hover:text-white transition">
@@ -173,8 +157,6 @@
       </div>
 
       <div class="p-6 space-y-6" id="paymentModalBody">
-
-        <!-- Abas de método de pagamento -->
         <div class="grid grid-cols-3 gap-2" id="paymentTabs">
           <button type="button" onclick="selecionarMetodoPagamento('pix')" data-method="pix"
             class="payment-tab flex flex-col items-center gap-2 p-4 rounded-2xl border border-zinc-700 hover:border-purple-500 transition">
@@ -193,13 +175,11 @@
           </button>
         </div>
 
-        <!-- Resumo rápido -->
         <div class="flex justify-between items-center bg-zinc-800/50 rounded-2xl px-5 py-4 text-sm">
           <span class="text-zinc-400">Total a pagar</span>
           <span class="font-bold text-lg text-purple-400" id="paymentTotal">R$ 0,00</span>
         </div>
 
-        <!-- PIX -->
         <div id="pixContent" class="hidden space-y-4">
           <div class="bg-white rounded-2xl p-6 flex items-center justify-center">
             <div class="w-40 h-40 bg-zinc-200 rounded-xl flex items-center justify-center">
@@ -218,7 +198,6 @@
           </button>
         </div>
 
-        <!-- CARTÃO -->
         <div id="cartaoContent" class="hidden space-y-4">
           <form onsubmit="event.preventDefault(); processarPagamento('cartao');" class="space-y-4">
             <div>
@@ -245,8 +224,7 @@
             </div>
             <div>
               <label class="text-xs text-zinc-400 mb-1 block">Parcelamento</label>
-              <select id="parcelasSelect"
-                class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500"></select>
+              <select id="parcelasSelect" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500"></select>
             </div>
             <button type="submit" class="w-full bg-purple-600 hover:bg-purple-500 transition py-4 rounded-2xl font-semibold">
               Pagar com cartão
@@ -254,7 +232,6 @@
           </form>
         </div>
 
-        <!-- BOLETO -->
         <div id="boletoContent" class="hidden space-y-4">
           <div class="bg-zinc-800 rounded-xl p-4 space-y-2">
             <p class="text-xs text-zinc-500">Código de barras</p>
@@ -272,7 +249,6 @@
             Confirmar geração do boleto
           </button>
         </div>
-
       </div>
     </div>
   </div>
@@ -287,72 +263,36 @@
 
   <script src="script.js"></script>
   <script>
-    // Estado do frete
     let freteSelecionado = null;
     let freteCalculado = null;
 
-    // Formata CEP enquanto digita
     function formatCep(input) {
       let v = input.value.replace(/\D/g, '');
       if (v.length > 5) v = v.slice(0, 5) + '-' + v.slice(5, 8);
       input.value = v;
     }
 
-    // Valida CEP (8 dígitos)
     function validarCep(cep) {
       return /^\d{5}-?\d{3}$/.test(cep);
     }
 
-    // Simula cálculo de frete baseado no CEP (faixas regionais)
     function simularFrete(cep) {
       const digits = cep.replace(/\D/g, '');
       const prefix = parseInt(digits.slice(0, 2), 10);
-
-      let basePac = 22;
-      let baseSedex = 38;
-      let prazoPac = 8;
-      let prazoSedex = 3;
-
-      // SP capital / região metropolitana (01x–05x)
+      let basePac = 22, baseSedex = 38, prazoPac = 8, prazoSedex = 3;
       if (prefix >= 1 && prefix <= 5) {
-        basePac = 15;
-        baseSedex = 28;
-        prazoPac = 4;
-        prazoSedex = 1;
+        basePac = 15; baseSedex = 28; prazoPac = 4; prazoSedex = 1;
+      } else if ((prefix >= 6 && prefix <= 19) || (prefix >= 80 && prefix <= 89)) {
+        basePac = 20; baseSedex = 35; prazoPac = 6; prazoSedex = 2;
+      } else if (prefix >= 20 && prefix <= 39) {
+        basePac = 25; baseSedex = 42; prazoPac = 7; prazoSedex = 3;
+      } else if (prefix >= 40 && prefix <= 79) {
+        basePac = 32; baseSedex = 55; prazoPac = 10; prazoSedex = 4;
+      } else {
+        basePac = 45; baseSedex = 75; prazoPac = 14; prazoSedex = 6;
       }
-      // Interior SP / Sul (06x–19x, 80x–89x)
-      else if ((prefix >= 6 && prefix <= 19) || (prefix >= 80 && prefix <= 89)) {
-        basePac = 20;
-        baseSedex = 35;
-        prazoPac = 6;
-        prazoSedex = 2;
-      }
-      // Sudeste (exceto SP) 20x–39x
-      else if (prefix >= 20 && prefix <= 39) {
-        basePac = 25;
-        baseSedex = 42;
-        prazoPac = 7;
-        prazoSedex = 3;
-      }
-      // Nordeste / Centro-Oeste 40x–79x
-      else if (prefix >= 40 && prefix <= 79) {
-        basePac = 32;
-        baseSedex = 55;
-        prazoPac = 10;
-        prazoSedex = 4;
-      }
-      // Norte e demais
-      else {
-        basePac = 45;
-        baseSedex = 75;
-        prazoPac = 14;
-        prazoSedex = 6;
-      }
-
-      // Ajuste por quantidade de itens
-      const qtd = cart.reduce((acc, i) => acc + i.quantity, 0);
-      const extra = Math.max(0, (qtd - 1) * 4);
-
+      const qtdFisicos = cart.filter(i => i.type !== 'file').reduce((acc, i) => acc + i.quantity, 0);
+      const extra = Math.max(0, (qtdFisicos - 1) * 4);
       return {
         pac: { preco: basePac + extra, prazo: prazoPac },
         sedex: { preco: baseSedex + extra, prazo: prazoSedex }
@@ -366,10 +306,8 @@
       const infoEl = document.getElementById('cepInfo');
       const optionsEl = document.getElementById('freteOptions');
       const btn = document.getElementById('btnCalcularFrete');
-
       errorEl.classList.add('hidden');
       infoEl.classList.add('hidden');
-
       if (!validarCep(cep)) {
         errorEl.textContent = 'Digite um CEP válido (ex: 01310-100)';
         errorEl.classList.remove('hidden');
@@ -379,28 +317,21 @@
         atualizarResumo();
         return;
       }
-
       btn.disabled = true;
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
-
       setTimeout(() => {
         freteCalculado = simularFrete(cep);
         freteSelecionado = null;
-
         document.querySelectorAll('input[name="frete"]').forEach(r => r.checked = false);
-
         document.getElementById('precoPac').textContent = formatPrice(freteCalculado.pac.preco);
         document.getElementById('prazoPac').textContent = `até ${freteCalculado.pac.prazo} dias úteis`;
         document.getElementById('precoSedex').textContent = formatPrice(freteCalculado.sedex.preco);
         document.getElementById('prazoSedex').textContent = `até ${freteCalculado.sedex.prazo} dias úteis`;
-
         optionsEl.classList.remove('hidden');
         infoEl.textContent = `CEP ${cep} • valores estimados`;
         infoEl.classList.remove('hidden');
-
         btn.disabled = false;
         btn.textContent = '->';
-
         atualizarResumo();
       }, 600);
     }
@@ -411,17 +342,8 @@
         freteSelecionado = null;
       } else {
         const tipo = selected.value;
-        freteSelecionado = {
-          tipo,
-          preco: freteCalculado[tipo].preco,
-          prazo: freteCalculado[tipo].prazo
-        };
-
-        // Frete grátis PAC acima de R$ 200
-        const subtotal = getCartTotal();
-        if (tipo === 'pac' && subtotal >= 200) {
-          freteSelecionado.preco = 0;
-        }
+        freteSelecionado = { tipo, preco: freteCalculado[tipo].preco, prazo: freteCalculado[tipo].prazo };
+        if (tipo === 'pac' && getCartTotal() >= 200) freteSelecionado.preco = 0;
       }
       atualizarResumo();
     }
@@ -429,11 +351,13 @@
     function atualizarResumo() {
       const subtotal = getCartTotal();
       document.getElementById('subtotal').textContent = formatPrice(subtotal);
-
       const shippingEl = document.getElementById('shippingLabel');
       let freteValor = 0;
-
-      if (freteSelecionado) {
+      const onlyFiles = typeof cartHasFiles === 'function' && cartHasFiles() && !cartHasProducts();
+      if (onlyFiles) {
+        shippingEl.innerHTML = '<span class="text-emerald-400">Por e-mail (grátis)</span>';
+        freteValor = 0;
+      } else if (freteSelecionado) {
         freteValor = freteSelecionado.preco;
         if (freteValor === 0) {
           shippingEl.innerHTML = `<span class="text-emerald-400">Grátis (${freteSelecionado.tipo.toUpperCase()})</span>`;
@@ -445,7 +369,6 @@
       } else {
         shippingEl.textContent = 'Calcule o frete';
       }
-
       document.getElementById('total').textContent = formatPrice(subtotal + freteValor);
     }
 
@@ -454,7 +377,6 @@
       const contentEl = document.getElementById('cartContent');
       const itemsEl = document.getElementById('cartItems');
       const btnClear = document.getElementById('btnClear');
-
       if (cart.length === 0) {
         emptyEl.classList.remove('hidden');
         contentEl.classList.add('hidden');
@@ -463,74 +385,70 @@
         freteCalculado = null;
         return;
       }
-
       emptyEl.classList.add('hidden');
       contentEl.classList.remove('hidden');
       btnClear.classList.remove('hidden');
-
       itemsEl.innerHTML = cart.map(item => {
         const imgSrc = item.image || '';
+        const isFile = item.type === 'file';
+        const badge = isFile
+          ? '<span class="inline-block mt-1 text-[10px] font-semibold bg-purple-600/30 text-purple-300 px-2 py-0.5 rounded-full">Arquivo digital • envio por e-mail</span>'
+          : '<span class="inline-block mt-1 text-[10px] font-semibold bg-zinc-700 text-zinc-300 px-2 py-0.5 rounded-full">Produto físico</span>';
         return `
           <div class="bg-zinc-900 rounded-3xl p-5 flex flex-col sm:flex-row gap-5 border border-zinc-800 hover:border-zinc-700 transition">
-            <div class="w-full sm:w-28 h-28 rounded-2xl overflow-hidden bg-zinc-800 flex-shrink-0">
+            <div class="w-full sm:w-28 h-28 rounded-2xl overflow-hidden bg-zinc-800 flex-shrink-0 relative">
               <img src="${imgSrc}" alt="${item.name}" class="w-full h-full object-cover" onerror="this.src='https://picsum.photos/200'">
+              ${isFile ? '<span class="absolute top-2 left-2 bg-purple-600 text-[10px] font-bold px-2 py-0.5 rounded-full">DIGITAL</span>' : ''}
             </div>
-            
             <div class="flex-1 flex flex-col justify-between">
               <div>
                 <div class="text-xs text-purple-400 uppercase tracking-wide mb-1">${item.category || ''}</div>
                 <h3 class="font-semibold text-lg leading-tight">${item.name}</h3>
+                ${badge}
                 <p class="text-purple-400 font-bold mt-1">${formatPrice(item.price)}</p>
               </div>
-
               <div class="flex items-center justify-between mt-4 gap-4">
                 <div class="flex items-center gap-1 bg-zinc-800 rounded-2xl p-1">
-                  <button onclick="updateQuantity(${item.id}, -1)" 
-                          class="w-9 h-9 rounded-xl hover:bg-zinc-700 transition flex items-center justify-center text-zinc-300 hover:text-white">
+                  <button onclick="updateQuantity(${item.id}, -1)" class="w-9 h-9 rounded-xl hover:bg-zinc-700 transition flex items-center justify-center text-zinc-300 hover:text-white">
                     <i class="fa-solid fa-minus text-xs"></i>
                   </button>
-                  <input type="number" min="1" value="${item.quantity}" 
-                         onchange="setQuantity(${item.id}, this.value)"
-                         class="w-12 text-center bg-transparent font-semibold focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
-                  <button onclick="updateQuantity(${item.id}, 1)" 
-                          class="w-9 h-9 rounded-xl hover:bg-zinc-700 transition flex items-center justify-center text-zinc-300 hover:text-white">
+                  <input type="number" min="1" value="${item.quantity}" onchange="setQuantity(${item.id}, this.value)"
+                    class="w-12 text-center bg-transparent font-semibold focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+                  <button onclick="updateQuantity(${item.id}, 1)" class="w-9 h-9 rounded-xl hover:bg-zinc-700 transition flex items-center justify-center text-zinc-300 hover:text-white">
                     <i class="fa-solid fa-plus text-xs"></i>
                   </button>
                 </div>
-
                 <div class="flex items-center gap-4">
                   <span class="font-bold text-lg">${formatPrice(item.price * item.quantity)}</span>
-                  <button onclick="removeFromCart(${item.id})" 
-                          class="text-zinc-500 hover:text-red-400 transition p-2" title="Remover">
+                  <button onclick="removeFromCart(${item.id})" class="text-zinc-500 hover:text-red-400 transition p-2" title="Remover">
                     <i class="fa-solid fa-trash-can"></i>
                   </button>
                 </div>
               </div>
             </div>
-          </div>
-        `;
+          </div>`;
       }).join('');
-
-      if (freteSelecionado && freteCalculado) {
-        selecionarFrete();
-      } else {
-        atualizarResumo();
+      const onlyFiles = typeof cartHasFiles === 'function' && cartHasFiles() && !cartHasProducts();
+      const freteBox = document.getElementById('freteBox');
+      if (freteBox) {
+        freteBox.style.opacity = onlyFiles ? '0.5' : '1';
+        freteBox.style.pointerEvents = onlyFiles ? 'none' : 'auto';
       }
+      if (freteSelecionado && freteCalculado) selecionarFrete();
+      else atualizarResumo();
     }
 
     function checkout() {
       if (cart.length === 0) return;
-
-      if (!freteSelecionado) {
-        alert('Por favor, calcule e selecione o frete antes de finalizar.');
+      const onlyFiles = typeof cartHasFiles === 'function' && cartHasFiles() && !cartHasProducts();
+      if (!onlyFiles && !freteSelecionado) {
+        alert('Por favor, calcule e selecione o frete antes de finalizar (necessário para produtos físicos).');
         document.getElementById('cepInput').focus();
         return;
       }
-
+      if (onlyFiles) freteSelecionado = { tipo: 'digital', preco: 0, prazo: 0 };
       abrirModalPagamento();
     }
-
-    // ===== MODAL DE PAGAMENTO =====
 
     let metodoPagamentoAtual = null;
     let pixCodigo = '';
@@ -538,7 +456,8 @@
     let boletoVencimento = '';
 
     function abrirModalPagamento() {
-      document.getElementById('paymentTotal').textContent = formatPrice(getCartTotal() + freteSelecionado.preco);
+      const freteValor = freteSelecionado ? freteSelecionado.preco : 0;
+      document.getElementById('paymentTotal').textContent = formatPrice(getCartTotal() + freteValor);
       document.getElementById('paymentModal').classList.remove('hidden');
       document.body.style.overflow = 'hidden';
       selecionarMetodoPagamento('pix');
@@ -551,17 +470,14 @@
 
     function selecionarMetodoPagamento(metodo) {
       metodoPagamentoAtual = metodo;
-
       document.querySelectorAll('.payment-tab').forEach(tab => {
         const ativo = tab.dataset.method === metodo;
         tab.classList.toggle('border-purple-500', ativo);
         tab.classList.toggle('bg-purple-500/10', ativo);
       });
-
       ['pix', 'cartao', 'boleto'].forEach(m => {
         document.getElementById(m + 'Content').classList.toggle('hidden', m !== metodo);
       });
-
       if (metodo === 'pix' && !pixCodigo) gerarPix();
       if (metodo === 'boleto' && !boletoCodigo) gerarBoleto();
       if (metodo === 'cartao') popularParcelas();
@@ -589,11 +505,9 @@
         gerarCodigoAleatorio(5) + '.' + gerarCodigoAleatorio(6) + ' ' +
         gerarCodigoAleatorio(5) + '.' + gerarCodigoAleatorio(6) + ' ' +
         Math.floor(Math.random() * 9) + ' ' + gerarCodigoAleatorio(14);
-
       const venc = new Date();
       venc.setDate(venc.getDate() + 3);
       boletoVencimento = venc.toLocaleDateString('pt-BR');
-
       document.getElementById('boletoCodigoTexto').textContent = boletoCodigo;
       document.getElementById('boletoVencimentoTexto').textContent = boletoVencimento;
     }
@@ -602,7 +516,6 @@
       navigator.clipboard.writeText(boletoCodigo.replace(/[.\s]/g, '')).then(() => showToast('Código de barras copiado!'));
     }
 
-    // Formatação dos campos do cartão
     function formatCardNumber(input) {
       let v = input.value.replace(/\D/g, '').slice(0, 16);
       input.value = v.replace(/(\d{4})(?=\d)/g, '$1 ');
@@ -620,17 +533,16 @@
 
     function popularParcelas() {
       const select = document.getElementById('parcelasSelect');
-      if (!select || !freteSelecionado) return;
-
-      const total = getCartTotal() + freteSelecionado.preco;
+      if (!select) return;
+      const freteValor = freteSelecionado ? freteSelecionado.preco : 0;
+      const total = getCartTotal() + freteValor;
       select.innerHTML = '';
-
       for (let i = 1; i <= 12; i++) {
         const valorParcela = total / i;
-        if (i > 1 && valorParcela < 25) break; // parcela mínima de R$ 25
+        if (i > 1 && valorParcela < 25) break;
         const opt = document.createElement('option');
         opt.value = i;
-        opt.textContent = `${i}x de ${formatPrice(valorParcela)} sem juros`;
+        opt.textContent = i + 'x de ' + formatPrice(valorParcela) + ' sem juros';
         select.appendChild(opt);
       }
     }
@@ -640,80 +552,54 @@
       const nome = document.getElementById('cardNome').value.trim();
       const validade = document.getElementById('cardValidade').value;
       const cvv = document.getElementById('cardCvv').value;
-
-      if (numero.length < 13 || numero.length > 16) {
-        showToast('Número de cartão inválido');
-        return false;
-      }
-      if (!nome) {
-        showToast('Informe o nome impresso no cartão');
-        return false;
-      }
-      if (!/^\d{2}\/\d{2}$/.test(validade)) {
-        showToast('Validade inválida (MM/AA)');
-        return false;
-      }
+      if (numero.length < 13 || numero.length > 16) { showToast('Número de cartão inválido'); return false; }
+      if (!nome) { showToast('Informe o nome impresso no cartão'); return false; }
+      if (!/^\d{2}\/\d{2}$/.test(validade)) { showToast('Validade inválida (MM/AA)'); return false; }
       const mes = parseInt(validade.split('/')[0], 10);
-      if (mes < 1 || mes > 12) {
-        showToast('Mês de validade inválido');
-        return false;
-      }
-      if (cvv.length < 3) {
-        showToast('CVV inválido');
-        return false;
-      }
+      if (mes < 1 || mes > 12) { showToast('Mês de validade inválido'); return false; }
+      if (cvv.length < 3) { showToast('CVV inválido'); return false; }
       return true;
     }
 
     function processarPagamento(metodo) {
       if (metodo === 'cartao' && !validarCartao()) return;
-
       const body = document.getElementById('paymentModalBody');
-      body.innerHTML = `
-        <div class="py-16 text-center">
-          <i class="fa-solid fa-spinner fa-spin text-4xl text-purple-500 mb-4"></i>
-          <p class="text-zinc-400">Processando pagamento...</p>
-        </div>
-      `;
-
+      body.innerHTML = '<div class="py-16 text-center"><i class="fa-solid fa-spinner fa-spin text-4xl text-purple-500 mb-4"></i><p class="text-zinc-400">Processando pagamento...</p></div>';
       setTimeout(() => finalizarPedido(metodo), 1800);
     }
 
     function finalizarPedido(metodo) {
       const body = document.getElementById('paymentModalBody');
       const subtotal = getCartTotal();
-      const totalFinal = subtotal + freteSelecionado.preco;
-
+      const freteValor = freteSelecionado ? freteSelecionado.preco : 0;
+      const totalFinal = subtotal + freteValor;
+      const temArquivos = typeof cartHasFiles === 'function' && cartHasFiles();
+      const temProdutos = typeof cartHasProducts === 'function' && cartHasProducts();
       let mensagemStatus = '';
       let icone = 'fa-circle-check text-emerald-400';
       let titulo = 'Pedido confirmado!';
-
       if (metodo === 'pix') {
         mensagemStatus = 'Pagamento aprovado via Pix!';
       } else if (metodo === 'cartao') {
         const parcelas = document.getElementById('parcelasSelect') ? document.getElementById('parcelasSelect').value : 1;
-        mensagemStatus = `Pagamento aprovado no cartão em ${parcelas}x!`;
+        mensagemStatus = 'Pagamento aprovado no cartão em ' + parcelas + 'x!';
       } else {
         titulo = 'Pedido registrado!';
         icone = 'fa-circle-info text-amber-400';
-        mensagemStatus = `Boleto gerado! Vencimento em ${boletoVencimento}. O pedido será confirmado após a compensação.`;
+        mensagemStatus = 'Boleto gerado! Vencimento em ' + boletoVencimento + '. O pedido será confirmado após a compensação.';
       }
-
-      body.innerHTML = `
-        <div class="py-10 text-center space-y-4">
-          <i class="fa-solid ${icone} text-5xl"></i>
-          <h4 class="text-xl font-bold">${titulo}</h4>
-          <p class="text-zinc-400 text-sm px-4">${mensagemStatus}</p>
-          <div class="bg-zinc-800/50 rounded-2xl p-5 text-sm text-left space-y-2 mx-4">
-            <div class="flex justify-between text-zinc-400"><span>Subtotal</span><span>${formatPrice(subtotal)}</span></div>
-            <div class="flex justify-between text-zinc-400"><span>Frete (${freteSelecionado.tipo.toUpperCase()})</span><span>${freteSelecionado.preco === 0 ? 'Grátis' : formatPrice(freteSelecionado.preco)}</span></div>
-            <div class="flex justify-between font-bold border-t border-zinc-700 pt-2"><span>Total</span><span class="text-purple-400">${formatPrice(totalFinal)}</span></div>
-          </div>
-          <button type="button" onclick="concluirPedido()" class="mt-4 bg-purple-600 hover:bg-purple-500 transition px-8 py-3 rounded-2xl font-semibold">
-            Concluir
-          </button>
-        </div>
-      `;
+      let avisoArquivo = '';
+      if (temArquivos) {
+        avisoArquivo = '<div class="bg-purple-500/15 border border-purple-500/40 rounded-2xl p-4 mx-4 text-left text-sm"><div class="flex items-start gap-3"><i class="fa-solid fa-envelope text-purple-400 mt-0.5"></i><div><p class="font-semibold text-purple-300">Arquivo(s) digital(is)</p><p class="text-zinc-400 mt-1">O(s) arquivo(s) 3D serão enviados para o e-mail informado no pedido em até alguns minutos após a confirmação do pagamento.</p></div></div></div>';
+      }
+      let freteLinha = '';
+      if (temProdutos && freteSelecionado) {
+        const labelFrete = freteSelecionado.tipo === 'digital' ? 'Digital' : freteSelecionado.tipo.toUpperCase();
+        freteLinha = '<div class="flex justify-between text-zinc-400"><span>Frete (' + labelFrete + ')</span><span>' + (freteValor === 0 ? 'Grátis' : formatPrice(freteValor)) + '</span></div>';
+      } else if (temArquivos && !temProdutos) {
+        freteLinha = '<div class="flex justify-between text-zinc-400"><span>Envio</span><span class="text-emerald-400">Por e-mail (grátis)</span></div>';
+      }
+      body.innerHTML = '<div class="py-10 text-center space-y-4"><i class="fa-solid ' + icone + ' text-5xl"></i><h4 class="text-xl font-bold">' + titulo + '</h4><p class="text-zinc-400 text-sm px-4">' + mensagemStatus + '</p>' + avisoArquivo + '<div class="bg-zinc-800/50 rounded-2xl p-5 text-sm text-left space-y-2 mx-4"><div class="flex justify-between text-zinc-400"><span>Subtotal</span><span>' + formatPrice(subtotal) + '</span></div>' + freteLinha + '<div class="flex justify-between font-bold border-t border-zinc-700 pt-2"><span>Total</span><span class="text-purple-400">' + formatPrice(totalFinal) + '</span></div></div><button type="button" onclick="concluirPedido()" class="mt-4 bg-purple-600 hover:bg-purple-500 transition px-8 py-3 rounded-2xl font-semibold">Concluir</button></div>';
     }
 
     function concluirPedido() {
@@ -731,14 +617,10 @@
     document.addEventListener('DOMContentLoaded', () => {
       renderCart();
       updateCartCount();
-
       const cepInput = document.getElementById('cepInput');
       if (cepInput) {
         cepInput.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            calcularFrete();
-          }
+          if (e.key === 'Enter') { e.preventDefault(); calcularFrete(); }
         });
       }
     });
