@@ -27,6 +27,8 @@ async function loadProductsFromFirebase() {
         price: Number(data.price) || 0,
         category: data.category || "",
         image: data.image || "",
+        images: Array.isArray(data.images) ? data.images : (data.image ? [data.image] : []),
+        model: data.model || data.modelUrl || "",
         description: data.description || "",
         type: data.type || "product",
         active: data.active !== false
@@ -72,6 +74,8 @@ async function addToCart(id, quantity = 1) {
           price: Number(data.price) || 0,
           category: data.category || "",
           image: data.image || "",
+          images: Array.isArray(data.images) ? data.images : (data.image ? [data.image] : []),
+          model: data.model || data.modelUrl || "",
           description: data.description || "",
           type: data.type || "product",
           active: data.active !== false
