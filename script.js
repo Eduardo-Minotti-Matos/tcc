@@ -226,7 +226,7 @@ function renderProductsPage() {
               class="flex-1 bg-purple-500 hover:bg-purple-600 py-4 rounded-3xl text-sm font-semibold">
               ADICIONAR
             </button>
-            <a href="../produtos/detalhe.html?id=${p.id}"
+            <a href="detalhe.html?id=${p.id}"
               class="flex-1 border border-white/30 hover:bg-white/10 py-4 rounded-3xl text-sm font-semibold text-center">
               DETALHES
             </a>
@@ -269,7 +269,7 @@ function renderArquivosPage() {
               class="flex-1 bg-purple-500 hover:bg-purple-600 py-4 rounded-3xl text-sm font-semibold">
               ADICIONAR
             </button>
-            <a href="../arquivos/detalhe.html?id=${p.id}"
+            <a href="detalhe.html?id=${p.id}"
               class="flex-1 border border-white/30 hover:bg-white/10 py-4 rounded-3xl text-sm font-semibold text-center">
               DETALHES
             </a>
