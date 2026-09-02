@@ -9,10 +9,28 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="../styles.css"/>
+  <style>
+    #btn3d.active-view,
+    #btnImage.active-view {
+      background-color: rgb(168 85 247);
+      color: white;
+      box-shadow: 0 10px 15px -3px rgba(131, 16, 185, 0.3);
+    }
+    #btn3d:not(.active-view),
+    #btnImage:not(.active-view) {
+      color: #a1a1aa;
+    }
+    #btn3d:hover:not(.active-view),
+    #btnImage:hover:not(.active-view) {
+      color: white;
+      background-color: #27272a;
+    }
+  </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.2.0/model-viewer.min.js" type="module"></script>
 </head>
-<body class="bg-zinc-950 text-white min-h-screen flex flex-col">
+<body class="bg-zinc-950 text-white">
 
-  <nav class="bg-black border-b border-zinc-800 sticky top-0 z-50">
+  <nav class="relative z-[100] bg-black border-b border-zinc-800 sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl overflow-hidden flex items-center justify-center">
@@ -39,56 +57,118 @@
     </div>
   </nav>
 
-  <main class="flex-1 max-w-7xl mx-auto px-6 py-12 w-full">
-    <a href="javascript:history.back()" class="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-purple-400 transition mb-8">
+  <main class="relative z-0 max-w-7xl mx-auto px-6 py-12">
+    <a href="javascript:history.back()" class="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 mb-10 text-lg">
       <i class="fa-solid fa-arrow-left"></i> Voltar
     </a>
 
-    <!-- Loading -->
-    <div id="loading" class="text-center py-24 text-zinc-500">
+    <div id="loadingState" class="text-center py-24 text-zinc-500">
       <i class="fa-solid fa-spinner fa-spin text-3xl text-purple-500 mb-4"></i>
       <p>Carregando produto...</p>
     </div>
 
-    <!-- Não encontrado -->
-    <div id="notFound" class="hidden text-center py-24">
+    <div id="notFoundState" class="hidden text-center py-24">
       <h2 class="text-2xl font-semibold text-zinc-300 mb-3">Produto não encontrado</h2>
-      <p class="text-zinc-500 mb-8">Esse item pode ter sido removido ou o link está incorreto.</p>
-      <a href="../produtos/PaginaPrincipalProdutos.html" class="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-500 transition px-8 py-4 rounded-2xl font-semibold">
+      <a href="../produtos/PaginaPrincipalProdutos.html" class="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-500 transition px-8 py-4 rounded-2xl font-semibold mt-6">
         Ver produtos
       </a>
     </div>
 
-    <!-- Conteúdo do produto -->
-    <div id="productDetail" class="hidden grid md:grid-cols-2 gap-10 lg:gap-16">
-      <div class="rounded-3xl overflow-hidden bg-zinc-900 border border-zinc-800">
-        <img id="detailImage" src="" alt="" class="w-full h-[360px] md:h-[480px] object-cover">
-      </div>
+    <div id="productContent" class="hidden grid md:grid-cols-2 gap-12 lg:gap-16">
+      
+      <!-- ÁREA VISUAL (3D + CARROSSEL) -->
+      <div class="rounded-3xl overflow-hidden shadow-2xl shadow-purple-900/30 bg-zinc-900 relative">
 
-      <div class="flex flex-col justify-center">
-        <p id="detailBadge" class="text-xs font-semibold uppercase tracking-wide text-purple-400 mb-3"></p>
-        <h1 id="detailName" class="text-3xl md:text-4xl font-bold mb-4"></h1>
-        <p id="detailPrice" class="text-3xl font-bold text-purple-400 mb-6"></p>
-        <p id="detailDescription" class="text-zinc-400 leading-relaxed mb-8"></p>
-
-        <div class="flex flex-col sm:flex-row gap-4">
-          <button id="btnAdd" class="flex-1 bg-purple-600 hover:bg-purple-500 transition py-4 rounded-2xl font-semibold text-lg">
-            <i class="fa-solid fa-cart-plus mr-2"></i> Adicionar ao carrinho
+        <div class="absolute top-6 left-6 z-40 flex gap-1 bg-zinc-900/95 backdrop-blur-2xl rounded-3xl p-2 border border-zinc-700 shadow-2xl">
+          <button onclick="showView('3d')" id="btn3d"
+                  class="px-7 py-3 rounded-2xl text-sm font-medium transition-all flex items-center gap-2">
+            <span>3D</span>
           </button>
-          <a href="../carrinho.html" class="flex-1 border border-white/30 hover:bg-white/10 transition py-4 rounded-2xl font-semibold text-center">
-            Ver carrinho
-          </a>
+          <button onclick="showView('image')" id="btnImage"
+                  class="px-7 py-3 rounded-2xl text-sm font-medium transition-all flex items-center gap-2">
+            <span>IMG</span>
+          </button>
         </div>
 
-        <p id="detailFileNote" class="hidden mt-6 text-sm text-zinc-500 flex items-start gap-2">
-          <i class="fa-solid fa-envelope text-purple-400 mt-0.5"></i>
+        <!-- VISUALIZADOR 3D -->
+        <div id="view3d">
+          <model-viewer 
+            id="modelViewer"
+            src=""
+            alt=""
+            auto-rotate 
+            camera-controls 
+            shadow-intensity="1.5"
+            shadow-softness="0.8"
+            exposure="0.85"
+            environment-intensity="0.85"
+            xr-environment
+            ar
+            ar-modes="webxr scene-viewer quick-look"
+            ar-scale="auto"
+            ar-placement="floor"
+            touch-action="pan-y"
+            style="width: 100%; height: 520px; background-color: #18181b;"
+            loading="eager"
+            camera-orbit="45deg 55deg 2.8m">
+          </model-viewer>
+
+          <button onclick="activateAR()" 
+                  class="absolute bottom-6 left-1/2 -translate-x-1/2 
+                         bg-purple-600 hover:bg-purple-500 
+                         text-white px-8 py-4 rounded-2xl font-medium 
+                         flex items-center gap-3 shadow-xl transition-all active:scale-95 z-30">
+            <i class="fa-solid fa-cube"></i>
+            Ver em Realidade Aumentada (AR)
+          </button>
+        </div>
+
+        <!-- CARROSSEL DE IMAGENS -->
+        <div id="viewImage" class="hidden flex flex-col">
+          <div class="relative overflow-hidden">
+            <div id="carousel" class="overflow-hidden">
+              <div id="slides" class="flex transition-transform duration-500 ease-out h-[460px]">
+                <!-- preenchido via JS -->
+              </div>
+            </div>
+            <button onclick="prevSlide()" 
+                    class="absolute left-4 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black/90 p-4 rounded-full text-white transition z-40">
+              <i class="fa-solid fa-chevron-left text-xl"></i>
+            </button>
+            <button onclick="nextSlide()" 
+                    class="absolute right-4 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black/90 p-4 rounded-full text-white transition z-40">
+              <i class="fa-solid fa-chevron-right text-xl"></i>
+            </button>
+          </div>
+          <div class="bg-zinc-900 py-5 border-t border-zinc-800">
+            <div id="thumbnails" class="flex gap-4 justify-center px-4 flex-wrap"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- INFO DO PRODUTO -->
+      <div class="flex flex-col">
+        <div id="detailCategory" class="text-purple-400 text-sm uppercase tracking-wide mb-2"></div>
+        <h1 id="detailName" class="text-4xl md:text-5xl font-bold tracking-tight mb-6"></h1>
+        <div id="detailPrice" class="text-5xl font-bold text-purple-400 mb-8"></div>
+
+        <div id="detailDescription" class="prose prose-invert max-w-none text-zinc-300 text-lg leading-relaxed mb-10">
+        </div>
+
+        <p id="detailFileNote" class="hidden mb-6 text-sm text-zinc-400 flex items-start gap-2">
+          <i class="fa-solid fa-envelope text-purple-400 mt-1"></i>
           <span>Arquivo digital: após a compra, o arquivo será enviado para o seu e-mail.</span>
         </p>
+
+        <button id="btnAddCart"
+                class="w-full md:w-auto bg-purple-600 hover:bg-purple-500 transition py-6 px-16 rounded-3xl text-xl font-semibold">
+          Adicionar ao Carrinho
+        </button>
       </div>
     </div>
   </main>
 
-  <footer class="bg-black py-16 border-t border-zinc-800 mt-auto">
+  <footer class="bg-black py-16 border-t border-zinc-800">
     <div class="max-w-7xl mx-auto px-6 text-center">
       <h1 class="logo-font text-4xl font-bold tracking-tighter mb-4">Descomplica3D Brasil</h1>
       <p class="text-zinc-500">Loja completa de impressora 3D • Pix instantâneo • Entrega em todo Brasil</p>
@@ -100,41 +180,135 @@
   <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore-compat.js"></script>
   <script src="../script.js"></script>
   <script>
+    let currentSlide = 0;
+    let totalSlides = 0;
+    let currentProduct = null;
+
+    function showView(view) {
+      document.getElementById('view3d').classList.toggle('hidden', view !== '3d');
+      document.getElementById('viewImage').classList.toggle('hidden', view !== 'image');
+      document.getElementById('btn3d').classList.toggle('active-view', view === '3d');
+      document.getElementById('btnImage').classList.toggle('active-view', view === 'image');
+    }
+
+    function resolvePath(path) {
+      if (!path) return '';
+      if (path.startsWith('http') || path.startsWith('../') || path.startsWith('/')) return path;
+      return '../' + path;
+    }
+
+    function createThumbnails() {
+      const thumbContainer = document.getElementById('thumbnails');
+      const slides = document.getElementById('slides');
+      thumbContainer.innerHTML = '';
+      for (let i = 0; i < totalSlides; i++) {
+        const thumb = document.createElement('img');
+        thumb.src = slides.children[i].src;
+        thumb.className = `w-20 h-20 object-cover rounded-2xl cursor-pointer border-2 transition-all hover:scale-105 ${i === currentSlide ? 'border-purple-500 ring-2 ring-purple-500/50' : 'border-transparent'}`;
+        thumb.onclick = () => goToSlide(i);
+        thumbContainer.appendChild(thumb);
+      }
+    }
+
+    function goToSlide(n) {
+      currentSlide = n;
+      document.getElementById('slides').style.transform = `translateX(-${currentSlide * 100}%)`;
+      createThumbnails();
+    }
+
+    function nextSlide() {
+      if (totalSlides === 0) return;
+      currentSlide = (currentSlide + 1) % totalSlides;
+      goToSlide(currentSlide);
+    }
+
+    function prevSlide() {
+      if (totalSlides === 0) return;
+      currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+      goToSlide(currentSlide);
+    }
+
+    function activateAR() {
+      const modelViewer = document.getElementById('modelViewer');
+      if (modelViewer && typeof modelViewer.activateAR === 'function') {
+        modelViewer.activateAR();
+      } else {
+        alert("Modo AR não disponível neste dispositivo ou navegador.\n\nDica: use um celular Android com ARCore ou iPhone com iOS 12+ e acesse via HTTPS.");
+      }
+    }
+
+    function setupGallery(product) {
+      // images pode ser array no Firebase, ou usa image principal
+      let imgs = [];
+      if (Array.isArray(product.images) && product.images.length) {
+        imgs = product.images;
+      } else if (product.image) {
+        imgs = [product.image];
+      } else {
+        imgs = ['https://picsum.photos/800'];
+      }
+
+      const slides = document.getElementById('slides');
+      slides.innerHTML = imgs.map((src, i) =>
+        `<img src="${resolvePath(src)}" class="w-full h-full object-cover flex-shrink-0" alt="Foto ${i + 1}" onerror="this.src='https://picsum.photos/800'">`
+      ).join('');
+
+      totalSlides = imgs.length;
+      currentSlide = 0;
+      goToSlide(0);
+    }
+
+    function setupModel(product) {
+      const viewer = document.getElementById('modelViewer');
+      // model pode ser campo "model" no Firebase (ex: modelos/elefante.glb)
+      const modelPath = product.model || product.modelUrl || '';
+      if (modelPath) {
+        viewer.src = resolvePath(modelPath);
+        viewer.alt = product.name || '';
+        document.getElementById('btn3d').style.display = '';
+        showView('3d');
+      } else {
+        // Sem modelo 3D: mostra só imagens
+        document.getElementById('btn3d').style.display = 'none';
+        showView('image');
+      }
+    }
+
     async function loadProductDetail() {
       const params = new URLSearchParams(window.location.search);
-      const id = params.get("id");
+      const id = params.get('id');
 
-      const loading = document.getElementById("loading");
-      const notFound = document.getElementById("notFound");
-      const detail = document.getElementById("productDetail");
+      const loading = document.getElementById('loadingState');
+      const notFound = document.getElementById('notFoundState');
+      const content = document.getElementById('productContent');
 
       if (!id) {
-        loading.classList.add("hidden");
-        notFound.classList.remove("hidden");
+        loading.classList.add('hidden');
+        notFound.classList.remove('hidden');
         return;
       }
 
-      // Garante que a lista foi carregada
       if (!products.length) {
         await loadProductsFromFirebase();
       }
 
       let product = products.find(p => String(p.id) === String(id));
 
-      // Busca direta no Firebase se não estiver na lista
       if (!product) {
         try {
-          const doc = await db.collection("products").doc(String(id)).get();
+          const doc = await db.collection('products').doc(String(id)).get();
           if (doc.exists) {
             const data = doc.data();
             product = {
               id: doc.id,
-              name: data.name || "",
+              name: data.name || '',
               price: Number(data.price) || 0,
-              category: data.category || "",
-              image: data.image || "",
-              description: data.description || "",
-              type: data.type || "product",
+              category: data.category || '',
+              image: data.image || '',
+              images: data.images || null,
+              model: data.model || data.modelUrl || '',
+              description: data.description || '',
+              type: data.type || 'product',
               active: data.active !== false
             };
           }
@@ -143,45 +317,44 @@
         }
       }
 
-      loading.classList.add("hidden");
+      loading.classList.add('hidden');
 
       if (!product) {
-        notFound.classList.remove("hidden");
+        notFound.classList.remove('hidden');
         return;
       }
 
-      // Preenche a página
-      const imgPath = product.image
-        ? (product.image.startsWith("http") || product.image.startsWith("../")
-            ? product.image
-            : "../" + product.image)
-        : "https://picsum.photos/600";
+      currentProduct = product;
 
-      document.getElementById("detailImage").src = imgPath;
-      document.getElementById("detailImage").alt = product.name;
-      document.getElementById("detailName").textContent = product.name;
-      document.getElementById("detailPrice").textContent = formatPrice(product.price);
-      document.getElementById("detailDescription").textContent =
-        product.description || "Sem descrição disponível.";
+      // Texto
+      document.getElementById('detailCategory').textContent =
+        product.type === 'file' ? 'Arquivo digital' : (product.category || 'Produto');
+      document.getElementById('detailName').textContent = product.name;
+      document.getElementById('detailPrice').textContent = formatPrice(product.price);
 
-      const badge = document.getElementById("detailBadge");
-      if (product.type === "file") {
-        badge.textContent = "Arquivo digital";
-        document.getElementById("detailFileNote").classList.remove("hidden");
+      const descEl = document.getElementById('detailDescription');
+      if (product.description) {
+        // Se a descrição tiver quebras de linha, mostra como parágrafo
+        descEl.innerHTML = '<p>' + String(product.description).replace(/\n/g, '</p><p>') + '</p>';
       } else {
-        badge.textContent = product.category || "Produto";
+        descEl.innerHTML = '<p class="text-zinc-500">Sem descrição disponível.</p>';
       }
 
-      document.title = product.name + " - Descomplica3D Brasil";
+      if (product.type === 'file') {
+        document.getElementById('detailFileNote').classList.remove('hidden');
+      }
 
-      document.getElementById("btnAdd").onclick = () => addToCart(product.id);
+      document.title = product.name + ' - Descomplica3D Brasil';
 
-      detail.classList.remove("hidden");
+      setupGallery(product);
+      setupModel(product);
+
+      document.getElementById('btnAddCart').onclick = () => addToCart(product.id);
+
+      content.classList.remove('hidden');
     }
 
-    document.addEventListener("DOMContentLoaded", async () => {
-      // script.js já carrega products no DOMContentLoaded;
-      // espera um pouco para garantir, ou chama de novo
+    window.addEventListener('load', async () => {
       if (!products.length) await loadProductsFromFirebase();
       await loadProductDetail();
       updateCartCount();
