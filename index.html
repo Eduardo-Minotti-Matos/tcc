@@ -154,6 +154,7 @@
   </footer>
   <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-auth-compat.js"></script>
   <script src="script.js"></script>
   <script>
   // ==================== CARROSSEL HERO ====================
@@ -223,12 +224,16 @@
     }
   }
 
-  function logout() {
-    if (confirm("Deseja realmente sair?")) {
+  async function logout() {
+    if (!confirm("Deseja realmente sair?")) return;
+    try {
+      await logoutUser();
+    } catch (e) {
+      console.error(e);
       localStorage.removeItem('user');
-      updateUserNav();
-      updateCartCount();
     }
+    updateUserNav();
+    updateCartCount();
   }
 
   // ==================== MODAIS ====================
@@ -260,45 +265,56 @@
     openRegisterModal();
   }
 
-  function handleLogin(e) {
+  async function handleLogin(e) {
     e.preventDefault();
     const email = document.getElementById('email').value.trim();
-
-    const savedUser = JSON.parse(localStorage.getItem('user'));
-
-    if (savedUser && savedUser.email === email) {
-      alert(`✅ Bem-vindo de volta, ${savedUser.name}!`);
-    } else {
-      alert("✅ Login realizado com sucesso! (Usuário de demonstração)");
+    const password = document.getElementById('password').value;
+    const btn = e.target.querySelector('button[type="submit"]');
+    if (btn) { btn.disabled = true; btn.textContent = 'Entrando...'; }
+    try {
+      const user = await loginUser(email, password);
+      showToast('Bem-vindo(a), ' + user.name + '!');
+      closeLoginModal();
+      updateUserNav();
+      updateCartCount();
+      document.getElementById('loginForm').reset();
+    } catch (err) {
+      alert(authErrorMessage(err));
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = 'Entrar'; }
     }
-
-    closeLoginModal();
-    updateUserNav();
-    updateCartCount();
   }
 
-  function handleRegister(e) {
+  async function handleRegister(e) {
     e.preventDefault();
     const name = document.getElementById('regName').value.trim();
     const email = document.getElementById('regEmail').value.trim();
     const password = document.getElementById('regPassword').value;
     const confirm = document.getElementById('regConfirmPassword').value;
 
-    if (password.length < 6) return alert("Senha deve ter no mínimo 6 caracteres.");
-    if (password !== confirm) return alert("As senhas não coincidem!");
+    if (name.length < 2) return alert('Informe seu nome completo.');
+    if (password.length < 6) return alert('Senha deve ter no mínimo 6 caracteres.');
+    if (password !== confirm) return alert('As senhas não coincidem!');
 
-    const user = { name, email, registeredAt: new Date().toISOString() };
-    localStorage.setItem('user', JSON.stringify(user));
-
-    alert(`✅ Conta criada com sucesso!\nBem-vindo(a), ${name}!`);
-    closeRegisterModal();
-    updateUserNav();
-    updateCartCount();
+    const btn = e.target.querySelector('button[type="submit"]');
+    if (btn) { btn.disabled = true; btn.textContent = 'Criando conta...'; }
+    try {
+      const user = await registerUser(name, email, password);
+      showToast('Conta criada! Olá, ' + user.name);
+      closeRegisterModal();
+      updateUserNav();
+      updateCartCount();
+      document.getElementById('registerForm').reset();
+    } catch (err) {
+      alert(authErrorMessage(err));
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = 'Criar minha conta'; }
+    }
   }
 
   // Fechar modais clicando fora
-  document.getElementById('loginModal').addEventListener('click', e => { if (e.target === this) closeLoginModal(); });
-  document.getElementById('registerModal').addEventListener('click', e => { if (e.target === this) closeRegisterModal(); });
+  document.getElementById('loginModal').addEventListener('click', e => { if (e.target.id === 'loginModal') closeLoginModal(); });
+  document.getElementById('registerModal').addEventListener('click', e => { if (e.target.id === 'registerModal') closeRegisterModal(); });
 
   // Inicialização
   window.addEventListener('load', () => {

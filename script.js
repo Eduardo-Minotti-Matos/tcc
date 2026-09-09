@@ -11,9 +11,94 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+const auth = firebase.auth();
 
 // Lista de produtos (carregada do Firestore)
 let products = [];
+let currentUser = null; // { uid, email, name }
+
+// ---------- AUTH ----------
+function syncLocalUser(user, profile) {
+  if (!user) {
+    currentUser = null;
+    localStorage.removeItem("user");
+    return null;
+  }
+  currentUser = {
+    uid: user.uid,
+    email: user.email || "",
+    name: (profile && profile.name) || user.displayName || (user.email ? user.email.split("@")[0] : "Usuário")
+  };
+  localStorage.setItem("user", JSON.stringify(currentUser));
+  return currentUser;
+}
+
+async function fetchUserProfile(uid) {
+  try {
+    const doc = await db.collection("users").doc(uid).get();
+    return doc.exists ? doc.data() : null;
+  } catch (e) {
+    console.warn("Perfil não carregado:", e);
+    return null;
+  }
+}
+
+/** Cadastro: e-mail + senha no Auth + nome no Firestore */
+async function registerUser(name, email, password) {
+  const cred = await auth.createUserWithEmailAndPassword(email, password);
+  await cred.user.updateProfile({ displayName: name });
+  await db.collection("users").doc(cred.user.uid).set({
+    name: name,
+    email: email,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+  const profile = { name, email };
+  syncLocalUser(cred.user, profile);
+  return currentUser;
+}
+
+/** Login: e-mail + senha */
+async function loginUser(email, password) {
+  const cred = await auth.signInWithEmailAndPassword(email, password);
+  const profile = await fetchUserProfile(cred.user.uid);
+  syncLocalUser(cred.user, profile);
+  return currentUser;
+}
+
+async function logoutUser() {
+  await auth.signOut();
+  syncLocalUser(null);
+}
+
+/** Observa login em qualquer página */
+function initAuthListener(onChange) {
+  auth.onAuthStateChanged(async (user) => {
+    if (user) {
+      const profile = await fetchUserProfile(user.uid);
+      syncLocalUser(user, profile);
+    } else {
+      syncLocalUser(null);
+    }
+    if (typeof onChange === "function") onChange(currentUser);
+    if (typeof updateUserNav === "function") updateUserNav();
+    updateCartCount();
+  });
+}
+
+function authErrorMessage(err) {
+  const code = (err && err.code) || "";
+  const map = {
+    "auth/email-already-in-use": "Este e-mail já está cadastrado.",
+    "auth/invalid-email": "E-mail inválido.",
+    "auth/weak-password": "A senha deve ter no mínimo 6 caracteres.",
+    "auth/user-not-found": "Conta não encontrada. Cadastre-se primeiro.",
+    "auth/wrong-password": "Senha incorreta.",
+    "auth/invalid-credential": "E-mail ou senha incorretos.",
+    "auth/too-many-requests": "Muitas tentativas. Tente novamente mais tarde.",
+    "auth/network-request-failed": "Falha de rede. Verifique sua conexão."
+  };
+  return map[code] || (err && err.message) || "Erro ao autenticar.";
+}
 
 // Carrega produtos do Firestore
 async function loadProductsFromFirebase() {
@@ -192,6 +277,7 @@ async function saveOrderToFirebase(orderData) {
   try {
     const docRef = await db.collection("orders").add({
       ...orderData,
+      userId: currentUser ? currentUser.uid : null,
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
     console.log("Pedido salvo:", docRef.id);
@@ -286,6 +372,7 @@ function renderArquivosPage() {
 
 // Inicialização
 document.addEventListener("DOMContentLoaded", async () => {
+  initAuthListener();
   await loadProductsFromFirebase();
   updateCartCount();
 
