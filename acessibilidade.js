@@ -251,7 +251,7 @@
       #d3d-a11y-reset { background: #27272a !important; color: #e4e4e7 !important; }
       #d3d-a11y-close { background: #7c3aed !important; color: #fff !important; }
 
-      /* Com daltonismo: navbar sticky vira fixed para não “grudar” no filtro */
+      /* Com daltonismo: navbar sticky vira fixed (filtro quebra sticky) */
       html.d3d-has-daltonismo nav.sticky,
       html.d3d-has-daltonismo nav[class*="sticky"] {
         position: fixed !important;
@@ -261,8 +261,15 @@
         width: 100% !important;
         z-index: 50 !important;
       }
+      /* Empurra o conteúdo: navbar fixed sai do fluxo e cobria o título */
       html.d3d-has-daltonismo body {
-        padding-top: 0;
+        padding-top: 88px !important;
+        box-sizing: border-box;
+      }
+      html.d3d-has-daltonismo main,
+      html.d3d-has-daltonismo body > section:not(nav),
+      html.d3d-has-daltonismo body > header {
+        scroll-margin-top: 96px;
       }
 
       /* Alto contraste — sem esconder botões da navbar */
