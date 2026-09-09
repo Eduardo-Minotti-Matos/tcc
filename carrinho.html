@@ -411,18 +411,18 @@
               </div>
               <div class="flex items-center justify-between mt-4 gap-4">
                 <div class="flex items-center gap-1 bg-zinc-800 rounded-2xl p-1">
-                  <button onclick="updateQuantity(${item.id}, -1)" class="w-9 h-9 rounded-xl hover:bg-zinc-700 transition flex items-center justify-center text-zinc-300 hover:text-white">
+                  <button onclick="updateQuantity('${item.id}', -1)" class="w-9 h-9 rounded-xl hover:bg-zinc-700 transition flex items-center justify-center text-zinc-300 hover:text-white">
                     <i class="fa-solid fa-minus text-xs"></i>
                   </button>
-                  <input type="number" min="1" value="${item.quantity}" onchange="setQuantity(${item.id}, this.value)"
+                  <input type="number" min="1" value="${item.quantity}" onchange="setQuantity('${item.id}', this.value)"
                     class="w-12 text-center bg-transparent font-semibold focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
-                  <button onclick="updateQuantity(${item.id}, 1)" class="w-9 h-9 rounded-xl hover:bg-zinc-700 transition flex items-center justify-center text-zinc-300 hover:text-white">
+                  <button onclick="updateQuantity('${item.id}', 1)" class="w-9 h-9 rounded-xl hover:bg-zinc-700 transition flex items-center justify-center text-zinc-300 hover:text-white">
                     <i class="fa-solid fa-plus text-xs"></i>
                   </button>
                 </div>
                 <div class="flex items-center gap-4">
                   <span class="font-bold text-lg">${formatPrice(item.price * item.quantity)}</span>
-                  <button onclick="removeFromCart(${item.id})" class="text-zinc-500 hover:text-red-400 transition p-2" title="Remover">
+                  <button onclick="removeFromCart('${item.id}')" class="text-zinc-500 hover:text-red-400 transition p-2" title="Remover">
                     <i class="fa-solid fa-trash-can"></i>
                   </button>
                 </div>
