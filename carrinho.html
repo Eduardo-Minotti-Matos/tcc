@@ -605,10 +605,29 @@
       body.innerHTML = '<div class="py-10 text-center space-y-4"><i class="fa-solid ' + icone + ' text-5xl"></i><h4 class="text-xl font-bold">' + titulo + '</h4><p class="text-zinc-400 text-sm px-4">' + mensagemStatus + '</p>' + avisoArquivo + '<div class="bg-zinc-800/50 rounded-2xl p-5 text-sm text-left space-y-2 mx-4"><div class="flex justify-between text-zinc-400"><span>Subtotal</span><span>' + formatPrice(subtotal) + '</span></div>' + freteLinha + '<div class="flex justify-between font-bold border-t border-zinc-700 pt-2"><span>Total</span><span class="text-purple-400">' + formatPrice(totalFinal) + '</span></div></div><button type="button" onclick="concluirPedido()" class="mt-4 bg-purple-600 hover:bg-purple-500 transition px-8 py-3 rounded-2xl font-semibold">Concluir</button></div>';
     }
 
-    function concluirPedido() {
+    async function concluirPedido() {
+      // Esvazia carrinho local
       cart = [];
-      saveCart();
+      localStorage.setItem('cart', JSON.stringify([]));
       updateCartCount();
+
+      // Esvazia também no Firebase (conta logada) ANTES de recarregar
+      try {
+        if (typeof currentUser !== 'undefined' && currentUser && currentUser.uid && typeof db !== 'undefined') {
+          await db.collection('users').doc(currentUser.uid).set(
+            {
+              cart: [],
+              cartUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            },
+            { merge: true }
+          );
+        } else if (typeof persistCartToFirebase === 'function') {
+          await persistCartToFirebase();
+        }
+      } catch (e) {
+        console.warn('Não foi possível limpar carrinho no Firebase:', e);
+      }
+
       freteSelecionado = null;
       freteCalculado = null;
       pixCodigo = '';
