@@ -15,7 +15,14 @@ const auth = firebase.auth();
 
 let products = [];
 let currentUser = null;
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
+// Arquivos digitais representam uma licença única no carrinho.
+function normalizeDigitalQuantities(list) {
+  return (Array.isArray(list) ? list : []).map(item => ({
+    ...item,
+    quantity: item.type === "file" ? 1 : (Number(item.quantity) > 0 ? Number(item.quantity) : 1)
+  }));
+}
+let cart = normalizeDigitalQuantities(JSON.parse(localStorage.getItem("cart")) || []);
 let cartSyncReady = false; // evita gravar no meio do carregamento do login
 
 // ---------- AUTH ----------
@@ -98,7 +105,7 @@ function initAuthListener(onChange) {
       syncLocalUser(null);
       cartSyncReady = false;
       // Carrinho continua o do localStorage (modo visitante)
-      cart = JSON.parse(localStorage.getItem("cart")) || [];
+      cart = normalizeDigitalQuantities(JSON.parse(localStorage.getItem("cart")) || []);
     }
     if (typeof onChange === "function") onChange(currentUser);
     if (typeof updateUserNav === "function") updateUserNav();
@@ -128,7 +135,7 @@ function sanitizeCartForFirestore(list) {
     id: String(item.id),
     name: item.name || "",
     price: Number(item.price) || 0,
-    quantity: Number(item.quantity) || 1,
+    quantity: item.type === "file" ? 1 : (Number(item.quantity) || 1),
     type: item.type || "product",
     image: item.image || "",
     category: item.category || ""
@@ -153,14 +160,14 @@ async function loadCartForUser(uid, profile) {
         id: String(item.id),
         name: item.name || "",
         price: Number(item.price) || 0,
-        quantity: Number(item.quantity) || 1,
+        quantity: item.type === "file" ? 1 : (Number(item.quantity) || 1),
         type: item.type || "product",
         image: item.image || "",
         category: item.category || ""
       }));
     } else if (local.length > 0) {
       // Conta vazia, mas navegador tem itens → salva na conta
-      cart = local;
+      cart = normalizeDigitalQuantities(local);
       await db.collection("users").doc(uid).set(
         { cart: sanitizeCartForFirestore(cart) },
         { merge: true }
@@ -189,6 +196,7 @@ async function persistCartToFirebase() {
 }
 
 function saveCart() {
+  cart = normalizeDigitalQuantities(cart);
   localStorage.setItem("cart", JSON.stringify(cart));
   // Sincroniza com a conta se estiver logado
   if (currentUser && cartSyncReady) {
@@ -241,13 +249,21 @@ async function addToCart(id, quantity = 1) {
 
   const existing = cart.find((item) => String(item.id) === String(id));
   if (existing) {
+    if (product.type === "file" || existing.type === "file") {
+      existing.type = "file";
+      existing.quantity = 1;
+      saveCart();
+      updateCartCount();
+      showToast("Este arquivo digital já está no seu carrinho!");
+      return;
+    }
     existing.quantity += quantity;
   } else {
     cart.push({
       id: product.id,
       name: product.name,
       price: product.price,
-      quantity,
+      quantity: product.type === "file" ? 1 : quantity,
       type: product.type || "product",
       image: product.image || "",
       category: product.category || ""
@@ -271,6 +287,10 @@ function updateQuantity(id, delta) {
   const item = cart.find((i) => String(i.id) === String(id));
   if (!item) return;
 
+  if (item.type === "file") {
+    showToast("Arquivos digitais são vendidos em uma única unidade.");
+    return;
+  }
   item.quantity += delta;
   if (item.quantity <= 0) {
     removeFromCart(id);
@@ -286,6 +306,11 @@ function setQuantity(id, qty) {
   const item = cart.find((i) => String(i.id) === String(id));
   if (!item) return;
 
+  if (item.type === "file") {
+    showToast("Arquivos digitais são vendidos em uma única unidade.");
+    if (typeof renderCart === "function") renderCart();
+    return;
+  }
   const num = parseInt(qty, 10);
   if (isNaN(num) || num <= 0) {
     removeFromCart(id);

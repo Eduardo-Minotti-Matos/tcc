@@ -411,7 +411,9 @@
                 <p class="text-purple-400 font-bold mt-1">${formatPrice(item.price)}</p>
               </div>
               <div class="flex items-center justify-between mt-4 gap-4">
-                <div class="flex items-center gap-1 bg-zinc-800 rounded-2xl p-1">
+                ${isFile ? `<div class="flex items-center gap-2 bg-zinc-800 rounded-2xl px-3 py-2 text-sm text-purple-300" title="Arquivos digitais têm quantidade fixa">
+                  <i class="fa-solid fa-lock text-xs"></i><span>Licença digital · 1 unidade</span>
+                </div>` : `<div class="flex items-center gap-1 bg-zinc-800 rounded-2xl p-1">
                   <button onclick="updateQuantity('${item.id}', -1)" class="w-9 h-9 rounded-xl hover:bg-zinc-700 transition flex items-center justify-center text-zinc-300 hover:text-white">
                     <i class="fa-solid fa-minus text-xs"></i>
                   </button>
@@ -420,7 +422,7 @@
                   <button onclick="updateQuantity('${item.id}', 1)" class="w-9 h-9 rounded-xl hover:bg-zinc-700 transition flex items-center justify-center text-zinc-300 hover:text-white">
                     <i class="fa-solid fa-plus text-xs"></i>
                   </button>
-                </div>
+                </div>`}
                 <div class="flex items-center gap-4">
                   <span class="font-bold text-lg">${formatPrice(item.price * item.quantity)}</span>
                   <button onclick="removeFromCart('${item.id}')" class="text-zinc-500 hover:text-red-400 transition p-2" title="Remover">
@@ -443,6 +445,11 @@
 
     function checkout() {
       if (cart.length === 0) return;
+      // Garante que nenhum arquivo digital seja cobrado em quantidade maior que 1.
+      if (cart.some(item => item.type === 'file' && item.quantity !== 1)) {
+        saveCart();
+        renderCart();
+      }
       const onlyFiles = typeof cartHasFiles === 'function' && cartHasFiles() && !cartHasProducts();
       if (!onlyFiles && !freteSelecionado) {
         alert('Por favor, calcule e selecione o frete antes de finalizar (necessário para produtos físicos).');
