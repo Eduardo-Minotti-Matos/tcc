@@ -482,6 +482,17 @@
 
     async function solicitarEnvioDemo() {
       const arquivos = [...new Set(cart.filter(item => item.type === 'file').map(item => String(item.id)))];
+      // Diagnóstico: compara o produto exibido no carrinho com o ID realmente enviado.
+      // Não registrar o token Firebase ou dados pessoais no console.
+      console.group('Descomplica3D — diagnóstico dos arquivos digitais');
+      console.table(cart.filter(item => item.type === 'file').map(item => ({
+        produto: item.name,
+        idFirebase: String(item.id),
+        tipo: item.type,
+        quantidade: item.quantity
+      })));
+      console.log('IDs enviados ao Apps Script:', arquivos);
+      console.groupEnd();
       if (!arquivos.length) return { solicitado: false, semArquivos: true };
       const usuario = auth.currentUser;
       if (!usuario) throw new Error('Entre na sua conta antes de finalizar a compra.');
