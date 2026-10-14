@@ -456,8 +456,59 @@
         document.getElementById('cepInput').focus();
         return;
       }
+      if (typeof cartHasFiles === 'function' && cartHasFiles() && !enviarArquivosPorEmailDemo()) return;
       if (onlyFiles) freteSelecionado = { tipo: 'digital', preco: 0, prazo: 0 };
       abrirModalPagamento();
+    }
+
+    // Configure somente a URL pública da implantação do Google Apps Script.
+    // NUNCA coloque senhas ou tokens privados neste HTML.
+    const EMAIL_SCRIPT_URL = ''; // exemplo: https://script.google.com/macros/s/SEU_ID/exec
+    let pedidoEmailSolicitado = false;
+
+    function enviarArquivosPorEmailDemo() {
+      const arquivos = cart.filter(item => item.type === 'file').map(item => String(item.id));
+      if (!arquivos.length) return true;
+      if (!auth.currentUser) {
+        alert('Faça login na sua conta para receber os arquivos por e-mail.');
+        return false;
+      }
+      if (!EMAIL_SCRIPT_URL.startsWith('https://script.google.com/macros/s/') || !EMAIL_SCRIPT_URL.endsWith('/exec')) {
+        alert('Envio de arquivos não configurado. Configure EMAIL_SCRIPT_URL no carrinho.html.');
+        return false;
+      }
+      return true;
+    }
+
+    async function solicitarEnvioDemo() {
+      const arquivos = [...new Set(cart.filter(item => item.type === 'file').map(item => String(item.id)))];
+      if (!arquivos.length) return { solicitado: false, semArquivos: true };
+      const usuario = auth.currentUser;
+      if (!usuario) throw new Error('Entre na sua conta antes de finalizar a compra.');
+      const token = await usuario.getIdToken();
+      const pedidoId = crypto.randomUUID ? crypto.randomUUID() : (Date.now() + '-' + Math.random().toString(36).slice(2));
+      // Um formulário POST evita o bloqueio CORS do Apps Script no GitHub Pages.
+      // A resposta é cross-origin; portanto, aqui NÃO é possível confirmar a entrega.
+      const frame = document.createElement('iframe');
+      frame.name = 'email-demo-' + pedidoId;
+      frame.style.display = 'none';
+      frame.setAttribute('title', 'Solicitação de entrega digital');
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = EMAIL_SCRIPT_URL;
+      form.target = frame.name;
+      form.style.display = 'none';
+      const campos = { token, pedidoId, arquivos: JSON.stringify(arquivos) };
+      Object.entries(campos).forEach(([nome, valor]) => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = nome;
+        input.value = valor;
+        form.appendChild(input);
+      });
+      document.body.append(frame, form);
+      try { form.submit(); } finally { form.remove(); setTimeout(() => frame.remove(), 30000); }
+      return { solicitado: true };
     }
 
     let metodoPagamentoAtual = null;
@@ -578,7 +629,19 @@
       setTimeout(() => finalizarPedido(metodo), 1800);
     }
 
-    function finalizarPedido(metodo) {
+    async function finalizarPedido(metodo) {
+      const btnBody = document.getElementById('paymentModalBody');
+      pedidoEmailSolicitado = false;
+      if (cart.some(item => item.type === 'file')) {
+        try {
+          const resultado = await solicitarEnvioDemo();
+          pedidoEmailSolicitado = !!resultado.solicitado;
+        } catch (erro) {
+          console.error('Erro ao solicitar envio:', erro);
+          btnBody.innerHTML = '<div class="p-8 text-center space-y-4"><p class="text-red-400">Não foi possível solicitar o envio: ' + String(erro.message || erro).replace(/[&<>"']/g, '') + '</p><button onclick="fecharModalPagamento()" class="bg-zinc-700 px-6 py-3 rounded-xl">Voltar ao carrinho</button></div>';
+          return;
+        }
+      }
       const body = document.getElementById('paymentModalBody');
       const subtotal = getCartTotal();
       const freteValor = freteSelecionado ? freteSelecionado.preco : 0;
@@ -589,18 +652,21 @@
       let icone = 'fa-circle-check text-emerald-400';
       let titulo = 'Pedido confirmado!';
       if (metodo === 'pix') {
-        mensagemStatus = 'Pagamento aprovado via Pix!';
+        mensagemStatus = 'Pagamento Pix simulado para demonstração (sem cobrança real).';
       } else if (metodo === 'cartao') {
         const parcelas = document.getElementById('parcelasSelect') ? document.getElementById('parcelasSelect').value : 1;
-        mensagemStatus = 'Pagamento aprovado no cartão em ' + parcelas + 'x!';
+        mensagemStatus = 'Pagamento de cartão simulado em ' + parcelas + 'x (sem cobrança real).';
       } else {
         titulo = 'Pedido registrado!';
         icone = 'fa-circle-info text-amber-400';
-        mensagemStatus = 'Boleto gerado! Vencimento em ' + boletoVencimento + '. O pedido será confirmado após a compensação.';
+        mensagemStatus = 'Boleto simulado. Não existe pagamento ou compensação real neste projeto demonstrativo.';
       }
       let avisoArquivo = '';
-      if (temArquivos) {
-        avisoArquivo = '<div class="bg-purple-500/15 border border-purple-500/40 rounded-2xl p-4 mx-4 text-left text-sm"><div class="flex items-start gap-3"><i class="fa-solid fa-envelope text-purple-400 mt-0.5"></i><div><p class="font-semibold text-purple-300">Arquivo(s) digital(is)</p><p class="text-zinc-400 mt-1">O(s) arquivo(s) 3D serão enviados para o e-mail informado no pedido em até alguns minutos após a confirmação do pagamento.</p></div></div></div>';
+      if (temArquivos && pedidoEmailSolicitado) {
+        avisoArquivo = '<div class="bg-purple-500/15 border border-purple-500/40 rounded-2xl p-4 mx-4 text-left text-sm"><div class="flex items-start gap-3"><i class="fa-solid fa-envelope text-purple-400 mt-0.5"></i><div><p class="font-semibold text-purple-300">Arquivo(s) digital(is)</p><p class="text-zinc-400 mt-1">A solicitação de envio dos arquivos anexados foi enviada para processamento. Confira seu e-mail cadastrado e a pasta de spam. A entrega depende da configuração do serviço e não pode ser confirmada nesta página.</p></div></div></div>';
+      }
+      if (temArquivos && !pedidoEmailSolicitado) {
+        avisoArquivo = '<div class="text-amber-300 text-sm mx-4">Não foi solicitado envio de arquivos. Configure o serviço antes de concluir.</div>';
       }
       let freteLinha = '';
       if (temProdutos && freteSelecionado) {
@@ -613,6 +679,10 @@
     }
 
     async function concluirPedido() {
+      if (cart.some(item => item.type === 'file') && !pedidoEmailSolicitado) {
+        alert('O envio digital não foi solicitado. O carrinho será mantido.');
+        return;
+      }
       // Esvazia carrinho local
       cart = [];
       localStorage.setItem('cart', JSON.stringify([]));
