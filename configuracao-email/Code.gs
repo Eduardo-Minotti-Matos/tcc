@@ -4,8 +4,15 @@
  * Não use para pagamentos reais: não existe verificação de transação!
  */
 const ARQUIVOS_DRIVE = {
+  'WaGEb20dOiRLcipocZoB': '1DUQzX9PnilPcgWC_fsTYuXY2edwQWXxK',
+  '7ajGev4ww06h8B2SDn13': '1n7bN7fkFtxQziRu-BGovq2APGfKgnO6P',
+  'jpbipvtMNguGbv96DoMI': '1t2F64utVHKYJUcP9qLbUTnZHzWnWNelQ',
+  'QkmtYMp4PBAkBwNt1h78': '1v-ANwF4rK5QfIGm278RzlZPIjiyrAXGG',
+  'sbJ0f2HYIMupYXYGCquz': '16TcKI1Q5JbdS2MY0vA_5D1sN77-qnl_-',
+  'RtIac7Az6kdwa57DKYSy': '1Dd8MEBpTZx1Y-Pe7SM_oSmq-XeES6Ilz',
+  'n3VGSdnVYgkyiV1mAZ0k': '1SsZIw30gP2IF38kuNbiXjXTCakOf1gU8',
+  '5sfQ04O55ZsvG1OezjPT': '1YtI6hR1_As4QxVK-_RWLsMi4-FIWh4h0',
   // IDs dos PRODUTOS do Firestore -> ID do ARQUIVO PRIVADO do Google Drive.
-  // 'id-do-produto-no-firebase': 'id-do-arquivo-no-google-drive',
 };
 const MAX_ARQUIVOS = 10;
 const MAX_ENVIOS_POR_DIA = 5;
@@ -62,9 +69,19 @@ function doPost(e) {
     } finally {
       lock.releaseLock();
     }
+    console.log('E-mail enviado com sucesso.');
     return resposta_('E-mail enviado.');
   } catch (err) {
-    console.error(err);
+    console.error('ERRO NO ENVIO DESCOMPLICA3D:', err.message, err.stack);
+    try {
+      PropertiesService.getScriptProperties().setProperty(
+        'ULTIMO_ERRO_EMAIL',
+        Utilities.formatDate(new Date(), 'America/Sao_Paulo', 'dd/MM/yyyy HH:mm:ss') +
+          ' - ' + String(err.message || err)
+      );
+    } catch (erroRegistro) {
+      console.error('Não foi possível registrar o último erro:', erroRegistro);
+    }
     return resposta_('Falha no processamento: ' + String(err.message || err));
   }
 }
@@ -88,4 +105,19 @@ function validarFirebaseToken_(token) {
 
 function resposta_(mensagem) {
   return ContentService.createTextOutput(mensagem).setMimeType(ContentService.MimeType.TEXT);
+}
+
+function testarEmail() {
+  GmailApp.sendEmail(
+    'eduhenriquematos@gmail.com',
+    'Teste Descomplica3D',
+    'Se você recebeu este e-mail, o envio pelo Apps Script está funcionando!'
+  );
+}
+
+
+// Execute esta função pelo editor para consultar o erro da última tentativa de envio.
+function verificarErroEmail() {
+  const erro = PropertiesService.getScriptProperties().getProperty('ULTIMO_ERRO_EMAIL');
+  console.log(erro || 'Nenhum erro de envio registrado.');
 }
